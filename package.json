@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.21",
+    "route": "^0.2.5"
+  },
+  "name": "eshop",
+  "version": "1.0.0",
+  "description": "EndPoint for EShop",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rizki Irfan Anshori",
+  "license": "ISC"
+}

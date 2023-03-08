@@ -1,4 +1,0 @@
-membuat file1.txt
-Menambahkan baris baru di file1.txt
-Memodifikasi
-Aku
