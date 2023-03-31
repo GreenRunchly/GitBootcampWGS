@@ -1,0 +1,87 @@
+<?- include('./parts/head', {
+    title:'Masuk', desc:'Otentikasi dirimu terlebih dahulu!',
+    navstatus : 'login'
+}); ?>
+<!-- Start Main --><main><div class="content">
+<header class="banner">
+    <div class="title">
+        <h1><i class="fas fa-laugh-wink"></i>Selamat Datang!</h1>
+        <p>Sebelum anda menggunakan Aplikasi E-Learning ini, harap masuk terlebih dahulu menggunakan metode di samping.</p>
+    </div>
+</header>
+<form id="loginForm" action="/api/akses/akun/masuk" method="post">
+    <div class="blok-list">
+        <div class="blok-list flex">
+            <input type="text" name="username"  id="input_username" placeholder="Username">
+            <input type="password" name="password" id="input_password" placeholder="Password">
+        </div>
+        <button class="button active" type="submit" value="batal">
+            <div class="icon"><i class="far fa-check"></i></div>
+            <div class="text"><span>Masuk</span></div>
+        </button>
+    </div>
+</form>
+<script>
+    // this is the id of the form
+    $("#loginForm").submit(function(e) {
+        e.preventDefault(); 
+        modalShow('konfirmasiLogin'); // Show Modal
+    });
+</script>
+</div></main> <!-- End of Main -->
+
+<dialog id="konfirmasiLogin">
+    <div class="panel-back aksiModal" value="close"></div>
+    <div class="content">
+        <div class="main">
+            <header class="banner small">
+                <div class="title">
+                    <h1><i class="fas fa-shield-alt"></i>Sudah benar?</h1>
+                    <p>Cek kembali informasi yang anda masukan!</p>
+                </div>
+            </header>
+        </div>
+        <div class="options">
+            <div class="blok-list flex">
+                <button class="button aksiModal" value="ok">
+                    <div class="icon"><i class="far fa-check"></i></div>
+                    <div class="text"><span>Lanjut</span></div>
+                </button>
+                <button class="button aksiModal" value="batal">
+                    <div class="icon"><i class="far fa-times"></i></div>
+                    <div class="text"><span>Cek lagi..</span></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Handle response masuk modal
+        modalResponse('konfirmasiLogin', (modalid) =>{
+            let form = $(`#loginForm`);
+            let actionUrl = form.attr('action');
+            $.ajax({
+                type: "POST",
+                url: actionUrl,
+                data: form.serialize(),
+                success: function(data) {
+                    if (data.sukses) {
+                        async function lakukan() {
+                            await notifAdd('Otentikasi berhasil!', data.pesan, 'ok', 0, false, true);
+                            await modalHide(modalid);
+                            location.reload();
+                        }; lakukan();
+                    }else{
+                        modalFailed(modalid);
+                        notifAdd('Gagal Masuk!', data.pesan, 'error', 0, true, true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    modalFailed(modalid);
+                    notifAdd('Gagal Masuk!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+                }
+            });
+        });
+    </script>
+</dialog>
+
+<?- include('./parts/footer'); ?>

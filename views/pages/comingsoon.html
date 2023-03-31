@@ -1,0 +1,32 @@
+<?- include('./parts/head', {
+    title:'Coming Soon', desc:'Masih dalam pengerjaan',
+    navstatus : '404'
+}); ?>
+<dialog id="modalLater" open>
+    <div class="content">
+        <div class="main">
+            <header class="banner small">
+                <div class="title">
+                    <h1>Coming Soon!</h1>
+                    <p>Halaman ini masa konstruksi, cek lagi nanti...</p>
+                </div>
+            </header>
+        </div>
+        <div class="options">
+            <div class="blok-list flex">
+                <button class="button aksiModal" value="ok">
+                    <div class="icon"><i class="far fa-arrow-left"></i></div>
+                    <div class="text"><span>I'll be back</span></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Handle response masuk modal
+        modalResponse('modalLater', (modalid) =>{
+            history.back()
+        });
+    </script>
+</dialog>
+
+<?- include('./parts/footer'); ?>

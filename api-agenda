@@ -1,0 +1,10 @@
+/akses/akun/masuk
+
+/akun/saya
+/akun/:idakun
+
+/kelas/saya
+/kelas/:idkelas
+
+/kelas/:idkelas/informasi/saya
+/kelas/:idkelas/informasi/:idinformasi

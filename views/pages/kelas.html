@@ -1,0 +1,219 @@
+<?- include('./parts/head', {
+    title:'Kelas', navstatus:'kelas'
+}); ?>
+<!-- Start Main --><main><div class="content">
+<header class="banner">
+    <div class="title">
+        <h1><i class="fas fa-chart-network"></i>Kelas</h1>
+        <p>Ingin menimba ilmu apa hari ini, <span class="userAkunName"></span>?</p>
+    </div>
+</header>
+<br><h2>Kelas Mengajar</h2>
+<div class="blok-list kelasCreatedListing">
+    <a class="banner hoverable small list-item ghost" onclick="modalShow('createKelas');">
+        <div class="title">
+            <h3><i class="far fa-question"></i>Tidak ada..</h3>
+            <p>Buat kelas mu sendiri, dan ajar peserta mu!</p>
+        </div>
+    </a>
+</div>
+<br><h2>Kelas Undangan</h2>
+<div class="blok-list kelasJoinedListing">
+    <a class="banner hoverable small list-item ghost" onclick="modalShow('joinKelas');">
+        <div class="title">
+            <h3><i class="far fa-question"></i>Belum Join..</h3>
+            <p>Join kelas sesorang untuk memulai!</p>
+        </div>
+    </a>
+</div>
+</div></main> <!-- End of Main -->
+
+<!-- Account Handler -->
+<?- include('./parts/module-akun'); ?>
+<script>
+    var DataPage = {};
+    function loadPageInitial() {
+        $(".userAkunName").html(`${DataAkun.name}`);
+        
+        // Load Data Kelas Joined
+        $.ajax({
+            type: "GET",
+            url: '/api/kelas/saya',
+            success: function(data) {
+                if (data.sukses) {
+                    DataAkun.kelas_joined = data.hasil;
+                    loadPageData();
+                    //notifAdd('Berhasil Mengambil Data (Kelas)!', data.pesan, 'ok', 0, true, false);
+                }else{
+                    notifAdd('Gagal Mengambil Data (Kelas)!', data.pesan, 'error', 0, false, true);
+                }
+            },
+            error: function(xhr, status, error) {
+                notifAdd('Gagal Mengambil Data (Kelas)!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+            }
+        });
+        async function loadPageData() {
+            if (DataAkun.kelas_joined){
+                let dataArray = DataAkun.kelas_joined;
+                $(`.kelasJoinedListing .list-item`).not(':last').remove();
+                $(`.kelasCreatedListing .list-item`).not(':last').remove();
+                dataArray.forEach(element => {
+                    console.log(element);
+                    // Strukcture
+                    let html = `
+                        <a class="banner hoverable small list-item" href="/kelas/${element.id}">
+                            <div class="title">
+                                <h2><i class="far fa-chalkboard-teacher"></i>${element.class_name}</h2>
+                                <h4><span>${element.room}</span> - <span>${element.subject}</span></h4>
+                                <p>${element.class_desc}</p>
+                            </div>
+                        </a>
+                    `;
+                    if (element.id_owner == DataAkun.id){
+                        $(`.kelasCreatedListing`).prepend(html);
+                    }else{
+                        $(`.kelasJoinedListing`).prepend(html);
+                    }
+                });
+            };
+        }; 
+    };
+</script>
+<!-- Join Kelas -->
+<dialog id="joinKelas">
+    <div class="panel-back aksiModal" value="close"></div>
+    <div class="content">
+        <div class="main">
+            <header class="banner small">
+                <div class="title">
+                    <h1><i class="fas fa-project-diagram"></i>Join Kelas</h1>
+                    <p>Masukan kode undangan agar bisa mengikuti kelas!</p>
+                </div>
+            </header>
+            <form id="joinForm" action="/api/kelas/join" method="post">
+                <div class="blok-list">
+                    <div class="blok-list flex">
+                        <input style="text-align: center;" type="text" name="invitecode" maxlength="12" id="input_invitecode" placeholder="Masukan Kode Undangan">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="options">
+            <div class="blok-list flex">
+                <button class="button aksiModal" value="ok">
+                    <div class="icon"><i class="far fa-check"></i></div>
+                    <div class="text"><span>Join</span></div>
+                </button>
+                <button class="button aksiModal" value="batal">
+                    <div class="icon"><i class="far fa-times"></i></div>
+                    <div class="text"><span>Tidak Jadi</span></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Handle response masuk modal
+        modalResponse('joinKelas', (modalid) =>{
+            let form = $(`#joinForm`);
+            let actionUrl = form.attr('action');
+            $.ajax({
+                type: "POST",
+                url: actionUrl,
+                data: form.serialize(),
+                success: function(data) {
+                    if (data.sukses) {
+                        async function lakukan() {
+                            await notifAdd('Join Berhasil!', data.pesan, 'ok', 0, true, true);
+                            await modalReset(modalid);
+                            await modalHide(modalid);
+                            loadPageInitial(); // Reload Data User
+                        }; lakukan();
+                    }else{
+                        modalFailed(modalid);
+                        notifAdd('Gagal Join!', data.pesan, 'error', 0, true, true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    modalFailed(modalid);
+                    notifAdd('Gagal Join!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+                }
+            });
+        }, (modalid) =>{
+            async function lakukan() {
+                // Nothing
+            }; lakukan(); 
+        });
+    </script>
+</dialog>
+
+<!-- Create Kelas -->
+<dialog id="createKelas">
+    <div class="panel-back aksiModal" value="close"></div>
+    <div class="content">
+        <div class="main">
+            <header class="banner small">
+                <div class="title">
+                    <h1><i class="fas fa-hammer"></i>Buat Kelas</h1>
+                    <p>Kelas akan segera dimulai, bersiap lah!</p>
+                </div>
+            </header>
+            <form id="createForm" action="/api/kelas/create" method="post">
+                <div class="blok-list">
+                    <div class="blok-list">
+                        <input type="text" name="name" id="input_name" maxlength="30" placeholder="Masukan Nama Kelas">
+                        <input type="text" name="desc" id="input_desc" maxlength="100" placeholder="Deskripsikan Kelasmu (Opsional)">
+                        <input type="text" name="subject" id="input_subject" placeholder="Apa yang akan diajari?">
+                        <input type="text" name="room" id="input_room" placeholder="Pada ruang berapa?">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="options">
+            <div class="blok-list flex">
+                <button class="button aksiModal" value="ok">
+                    <div class="icon"><i class="far fa-check"></i></div>
+                    <div class="text"><span>Buat</span></div>
+                </button>
+                <button class="button aksiModal" value="batal">
+                    <div class="icon"><i class="far fa-times"></i></div>
+                    <div class="text"><span>Tidak Jadi</span></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Handle response masuk modal
+        modalResponse('createKelas', (modalid) =>{
+            let form = $(`#createForm`);
+            let actionUrl = form.attr('action');
+            $.ajax({
+                type: "POST",
+                url: actionUrl,
+                data: form.serialize(),
+                success: function(data) {
+                    if (data.sukses) {
+                        async function lakukan() {
+                            await notifAdd('Membuat Kelas Berhasil!', data.pesan, 'ok', 0, true, true);
+                            await modalReset(modalid);
+                            await modalHide(modalid);
+                            loadPageInitial(); // Reload Data User
+                        }; lakukan();
+                    }else{
+                        modalFailed(modalid);
+                        notifAdd('Gagal Membuat Kelas!', data.pesan, 'error', 0, true, true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    modalFailed(modalid);
+                    notifAdd('Gagal Membuat Kelas!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+                }
+            });
+        }, (modalid) =>{
+            async function lakukan() {
+                // Nothing
+            }; lakukan(); 
+        });
+    </script>
+</dialog>
+<!-- Account Handler End -->
+<?- include('./parts/footer'); ?>

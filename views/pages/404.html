@@ -1,0 +1,45 @@
+<?- include('./parts/head', {
+    title:'404 Not Found', desc:'Halaman yang dimaksud tidak ditemukan!',
+    navstatus : '404'
+}); ?>
+<!-- <main><div class="content">
+<header class="banner">
+    <div class="title">
+        <h1>404 Not Found</h1>
+        <p>Halaman yang dimaksud tidak ditemukan!</p>
+    </div>
+</header>
+</div></main> -->
+
+<dialog id="modal404" open>
+    <div class="content">
+        <div class="main">
+            <header class="banner small">
+                <div class="title">
+                    <h1>Are you lost?</h1>
+                    <p>Sepertinya halaman yang dimaksud tidak ada, apakah anda ingin dibawa kembali ke menu awal?</p>
+                </div>
+            </header>
+        </div>
+        <div class="options">
+            <div class="blok-list flex">
+                <button class="button aksiModal" value="ok">
+                    <div class="icon"><i class="far fa-arrow-left"></i></div>
+                    <div class="text"><span>Iya, bawa saya!</span></div>
+                </button>
+                <!-- <button class="button aksiModal" value="batal">
+                    <div class="icon"><i class="far fa-times"></i></div>
+                    <div class="text"><span></span></div>
+                </button> -->
+            </div>
+        </div>
+    </div>
+    <script>
+        // Handle response masuk modal
+        modalResponse('modal404', (modalid) =>{
+            window.location = '/';
+        });
+    </script>
+</dialog>
+
+<?- include('./parts/footer'); ?>

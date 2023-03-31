@@ -1,0 +1,22 @@
+<script>
+    var DataAkun = {};
+    // Load Data Akun User
+    $.ajax({
+        type: "GET",
+        url: '/api/akun/saya',
+        success: function(data) {
+            if (data.sukses) {
+                DataAkun = data.hasil[0];
+                //console.log(DataAkun);
+            }else{
+                notifAdd('Otentikasi gagal!', data.pesan, 'error', 0, false, true);
+                window.location = '/portal';
+            }
+        },
+        error: function(xhr, status, error) {
+            notifAdd('Otentikasi gagal!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+        }
+    }).then(() => {
+        loadPageInitial();
+    });
+</script>

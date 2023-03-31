@@ -1,0 +1,36 @@
+<?- include('./parts/head', {
+    title:'Dashboard', navstatus:'dashboard'
+}); ?>
+<!-- Start Main --><main><div class="content">
+<header class="banner">
+    <div class="title">
+        <h1><span class="userAkunSay"></span>, <span class="userAkunSurName"></span>!</h1>
+        <h3><span class="userAkunEmail"></span> - <span class="userAkunUsername"></span></h3>
+    </div>
+</header>
+</div></main> <!-- End of Main -->
+
+<!-- Account Handler -->
+<?- include('./parts/module-akun'); ?>
+<script>
+    var DataPage = {};
+    function loadPageInitial() {
+        $(".userAkunName").html(`${DataAkun.name}`);
+        $(".userAkunSurName").html(`${(DataAkun.name).split(" ")[0]}`);
+        $(".userAkunEmail").html(`${DataAkun.email}`);
+        $(".userAkunUsername").html(`${DataAkun.username}`);
+
+        // Mendapat sapaan berdasarkan waktu
+        let curHr = new Date().getHours(); let say = ``;
+        if (curHr < 12) {
+            say = `<i class="fas fa-sun-haze"></i>Good Morning`;
+        } else if (curHr < 18) {
+            say = `<i class="fas fa-sun"></i>Good Afternoon`;
+        } else {
+            say = `<i class="fas fa-cloud-moon"></i>Good Evening`;
+        }
+        $(".userAkunSay").html(say);
+    };
+</script>
+<!-- Account Handler End -->
+<?- include('./parts/footer'); ?>

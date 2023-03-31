@@ -1,0 +1,326 @@
+<? if (typeof navstatus == "undefined") { navstatus = 'index' }   ?>
+<? if (typeof title == "undefined") { title = 'IeuClassroom' }   ?>
+<? if (typeof desc == "undefined") { desc = 'Aplikasi belajar berbasis web secara online!' }   ?>
+<? if (typeof keywords == "undefined") { keywords = 'IeuClassroom, Classroom, E-Learning' }   ?>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= title ?></title>
+    <meta name="description" content="<?= desc ?>">
+    <meta name="author" content="Rizki Irfan Anshori">
+    <meta name="keywords" content="<?= keywords ?>">
+    <link rel="stylesheet" type="text/css" href="/assets/css/kulit.css">
+    <link rel="stylesheet" href="/assets/fontawesome/5.13.0/web/css/all.css"/>
+    <script src="/assets/js/jquery-3.6.3.min.js"></script>
+</head>
+<script>
+    /* Other Function */
+    function autoSelectInput(ini) {
+        $(ini).focus();
+        $(ini).select();
+        document.execCommand('copy');
+        notifAdd('Salin Berhasil!', `${$(ini).val()} berhasil disalin!`, 'ok', 0, true, false);
+    }
+    function waktuHMS(timestamp) {
+        // dalam millisecond, bukan second
+        var date = new Date(timestamp);
+        var hours = "0" + date.getHours();
+        var minutes = "0" + date.getMinutes();
+        var seconds = "0" + date.getSeconds();
+        return formattedTime = hours.substr(-2) + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+        // return formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+    }
+    function waktuLocalDate(timestamp) {
+        // dalam millisecond, bukan second
+        var date = new Date(timestamp);
+        formattedTime = date.toLocaleString();
+        return formattedTime;
+        // return formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+    }
+    
+    /* Notification */
+    function notifShowPanel(){
+        // console.log(`opening Notification Panel...`);
+        $(`#notificationPanel`).attr('open','');
+    }
+    function notifClosePanel(){
+        // console.log(`Closing Notification Panel...`);
+        $(`#notificationPanel`).removeAttr('open');
+    }
+    function notifShow(notifid){
+        // console.log(`Opening single notification.. ${notifid}`);
+        if ($(`#notificationPanel #${notifid}.notif-item.temp`) != null){
+            $(`#notificationPanel #${notifid}.notif-item.temp`).addClass('show');
+        }
+    }
+    function notifLoad() {
+        // console.log('Load all notification...');
+        // History Notifikasi pada browser lokal
+        let notifBank = []; 
+        if (localStorage.getItem('notification')){
+            notifBank = JSON.parse(atob(localStorage.getItem('notification')));
+        }
+        // console.log(notifBank);
+        notifBank.forEach(element => {
+            let {title, message, status, when} = element;
+            notifAdd(title, message, status, when, false, false);
+        });
+        
+    }
+    function notifClear() {
+        $(`#notificationPanel .notif-item.temp`).remove();
+        localStorage.removeItem('notification');
+    }
+    function notifRemove(notifid){
+        // History Notifikasi pada browser lokal
+        let notifBank = []; 
+        if (localStorage.getItem('notification')){
+            notifBank = JSON.parse(atob(localStorage.getItem('notification')));
+        }
+        
+        // console.log(`Remove single notification.. ${notifid}`);
+        if ($(`#notificationPanel #${notifid}.notif-item.temp`) != null){
+            $(`#notificationPanel #${notifid}.notif-item.temp`).remove();
+        }
+        let when = notifid.slice(5);
+        // console.log(when);
+        notifBank = $.grep(notifBank, function(e){ 
+            return e.when != when; 
+        });
+        // console.log(notifBank);
+        localStorage.setItem('notification', btoa(JSON.stringify(notifBank)));
+    }
+    
+    function notifAdd(title, message, status='none', when=Math.floor(Date.now()), popup=true, save=true) {
+        if ((typeof when == undefined) || (when == false)){
+            when = Math.floor(Date.now());
+        }
+        // // console.log(when);
+
+        // Enable or Disable popup
+        if (popup == false){ popup = ''; }else{ popup = 'popup'; }
+
+        // History Notifikasi pada browser lokal
+        let notifBank = []; 
+        if (localStorage.getItem('notification')){
+            notifBank = JSON.parse(atob(localStorage.getItem('notification')));
+        }
+
+        let iconstatus = ``;
+        switch (status) {
+            case 'error':
+                iconstatus = `<i class="fas fa-exclamation-triangle"></i>`;
+                break;
+            case 'ok':
+                iconstatus = `<i class="fas fa-check"></i>`;
+                break;
+        
+            default:
+                iconstatus = `<i class="fas fa-exclamation"></i>`;
+                break;
+        }
+        let questuniqueid = when;
+        
+        $(`#notificationPanel > .content > .main >.wrapper`).prepend(`
+            <div class="notif-item temp ${popup} aksiModal" value="notif-clear-single" id="notif${questuniqueid}">
+                <header class="banner color small" cstate="${status}">
+                    <div class="title">
+                        <h3>${iconstatus}${title}</h3>
+                        <p>${waktuHMS(when)} - ${message}</p>
+                    </div>
+                </header>
+            </div>
+        `);
+
+        let whut = {title, message, status, when};
+        notifBank.push(whut);
+        if (save == true){ // Save history?
+            localStorage.setItem('notification', btoa(JSON.stringify(notifBank)));
+            // localStorage.setItem('notification_history', btoa(JSON.stringify(notifBank)));
+        }
+    }
+    /* Modal */
+    // Menampilkan modal modalShow(modalid);
+    function modalShow(modalid){
+        // console.log(`opening.. ${modalid}`);
+        $(`#${modalid}`).attr('open','');
+    }
+    // Menghilangkan modal modalHide(modalid);
+    function modalHide(modalid){
+        // console.log(`Closing.. ${modalid}`);
+        $(`#${modalid}`).removeAttr('open');
+    }
+    // Menangani kegagalan modal modalFailed(modalid);
+    function modalFailed(modalid){
+        $(`#${modalid} .main-loading`).remove();
+        $(`#${modalid} .main`).show();
+        $(`#${modalid} .aksimodal`).show();
+    }
+    // Menangani kegagalan modal modalFailed(modalid);
+    function modalReset(modalid){
+        $(`#${modalid} .main-loading`).remove();
+        $(`#${modalid} .main`).show();
+        $(`#${modalid} .aksimodal`).show();
+    }
+    // Mengambil respon pada suatu modal modalResponse(idmodal, ok, cancel);
+    function modalResponse(modalid,okstate=()=>{},cancelstate=()=>{}){
+        $(document).on('click', `#${modalid} .aksiModal`, function() {
+            
+            // Kalau valuenya tidak bisa di ambil
+            let aksivalue = this.value;
+            if (this.value == null){
+                aksivalue = $(this).attr('value');
+            }
+
+            // console.log(aksivalue);
+            switch (aksivalue) {
+                case 'ok':
+                    let temp = $(`#${modalid} .content .main`).hide();
+                    $(`#${modalid} .content`).append(`
+                    <div class="main-loading">
+                        <header class="banner small">
+                            <div class="title">
+                                <h1><i class="fas fa-spinner-third"></i> Loading..</h1>
+                                <p>Permintaan sedang diproses, harap tunggu...</p>
+                            </div>
+                        </header>
+                    </div>
+                    `);
+                    $(`#${modalid} .aksimodal`).hide();
+                    // Delay the submition, for server sake
+                    let lokalInt = setInterval(() => {
+                        okstate(modalid); clearInterval(lokalInt);
+                    }, Math.random()*1000);
+                    break;
+                case 'instant-ok':
+                    okstate(modalid);
+                    break;
+                case 'notif-clear-single':
+                    let idnotif = $(this).attr('id');
+                    notifRemove(idnotif);
+                    break;
+                case 'notif-clear': 
+                    notifClear();
+                    notifClosePanel();
+                    break;
+                case '':
+                    
+                    break;
+                default:
+                    modalHide(modalid);
+                    cancelstate(modalid, aksivalue);
+                    break;
+            }
+        });
+        $(document).bind('close', `#${modalid}`, function() {
+            modalFailed(modalid);
+        });
+    }
+</script>
+<body>
+<? 
+    switch(navstatus) {
+        case 'dashboard' : ?> <?- include('navbars/dashboard'); ?> <? break;
+        case 'kelas' : ?> <?- include('navbars/kelas'); ?> <? break;
+        case 'kelas-single' : ?> <?- include('navbars/kelas-single'); ?> <? break;
+        case 'informasi-single' : ?> <?- include('navbars/informasi-single'); ?> <? break;
+        case 'login' : ?> <?- include('navbars/login'); ?> <? break; 
+        case '404' : ?> <? break; 
+        default : ?> <?- include('navbars/index'); ?> <? break;        
+    }
+?>
+<!-- Notification Panel Center -->
+<dialog class="notif-panel" id="notificationPanel">
+    <div class="panel-back aksiModal" value="close"></div>
+    <div class="content">
+        <div class="main">
+            <header class="banner color small">
+                <div class="title">
+                    <h2><i class="fas fa-comment-exclamation"></i>Notification</h2>
+                    <p>Sentuh luar panel untuk sembuyikan.</p>
+                </div>
+            </header>
+            <div class="options">
+                <div class="blok-list flex">
+                    <button class="button aksiModal" value="notif-clear">
+                        <div class="icon"><i class="fas fa-trash"></i></div>
+                        <div class="text"><span>Clear All</span></div>
+                    </button>
+                </div>
+            </div>
+            <div class="blok-list wrapper">
+                <div class="notif-item ghost" >
+                    <header class="banner color small" cstate="none">
+                        <div class="title">
+                            <h3><i class="fas fa-thumbs-up"></i>All good!</h3>
+                            <p>Tidak ada notifikasi apapun untuk sekarang...</p>
+                        </div>
+                    </header>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Handle response masuk modal
+        modalResponse('notificationPanel', (modalid) =>{
+            modalHide(modalid);
+        });
+        notifLoad(); // Load all Notification
+    </script>
+</dialog>
+
+<dialog id="konfirmasiLogout">
+    <div class="panel-back aksiModal" value="close"></div>
+    <div class="content">
+        <div class="main">
+            <header class="banner small">
+                <div class="title">
+                    <h1>Ingin Mengakhiri Sesi?</h1>
+                    <p>Anda akan dibawa ke halaman utama setelah ini pilih keluar.</p>
+                </div>
+            </header>
+        </div>
+        <div class="options">
+            <div class="blok-list flex">
+                <button class="button aksiModal" value="ok">
+                    <div class="icon"><i class="far fa-check"></i></div>
+                    <div class="text"><span>Keluar</span></div>
+                </button>
+                <button class="button aksiModal" value="batal">
+                    <div class="icon"><i class="far fa-times"></i></div>
+                    <div class="text"><span>Tidak Jadi</span></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Handle response masuk modal
+        modalResponse('konfirmasiLogout', (modalid) =>{
+            $.ajax({
+                type: "POST",
+                url: '/api/akses/akun/keluar',
+                success: function(data) {
+                    if (data.sukses) {
+                        async function lakukan() {
+                            await notifAdd('Berhasil Keluar!', data.pesan, 'ok', 0, false, true);
+                            await modalHide(modalid);
+                            window.location = '/';
+                        }; lakukan();
+                    }else{
+                        modalFailed(modalid);
+                        notifAdd('Gagal Keluar!', data.pesan, 'error', 0, true, true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    modalFailed(modalid);
+                    notifAdd('Gagal Keluar!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+                }
+            });
+        }, (modalid) =>{
+            async function lakukan() {
+                await notifAdd('Keluar Dibatalkan!', 'Kamu sendiri yang membatalkannya.', 'error', 0, false, true);
+                await modalHide(modalid);
+            }; lakukan(); 
+        });
+    </script>
+</dialog>
