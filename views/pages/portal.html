@@ -71,6 +71,9 @@
                             location.reload();
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Masuk!', data.pesan, 'error', 0, true, true);
                     }

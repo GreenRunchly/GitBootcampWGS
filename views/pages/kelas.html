@@ -45,6 +45,9 @@
                     loadPageData();
                     //notifAdd('Berhasil Mengambil Data (Kelas)!', data.pesan, 'ok', 0, true, false);
                 }else{
+                    if (data.logout){
+                        window.location.reload(); return;
+                    }
                     notifAdd('Gagal Mengambil Data (Kelas)!', data.pesan, 'error', 0, false, true);
                 }
             },
@@ -129,6 +132,9 @@
                             loadPageInitial(); // Reload Data User
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Join!', data.pesan, 'error', 0, true, true);
                     }
@@ -199,6 +205,9 @@
                             loadPageInitial(); // Reload Data User
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Membuat Kelas!', data.pesan, 'error', 0, true, true);
                     }

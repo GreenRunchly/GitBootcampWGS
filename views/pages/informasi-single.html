@@ -19,6 +19,9 @@
     var DataPage = {}; var DataPageInformasi = {};
     function loadPageInitial() {
         $(".userAkunName").html(`${DataAkun.name}`);
+
+        // Tombol Mundur
+        $(".backPageButton").attr('href', '/kelas/<?= idkelas ?>');
         
         // Load Data Kelas Joined
         $.ajax({
@@ -73,7 +76,7 @@
             <form id="editPostForm" action="/api/kelas/<?= idkelas ?>/informasi/do" method="post" enctype="multipart/form-data">
                 <div class="blok-list">
                     <div class="blok-list">
-                        <input type="hidden" name="id_informasi" value="<?= idinformasi ?>"/>
+                        <input type="hidden" name="idinformasi" value="<?= idinformasi ?>"/>
                         <input type="text" name="title" id="input_title" maxlength="60" placeholder="Judul Postingan">
                         <input type="file" name="content" id="input_content" >
                     </div>
@@ -120,6 +123,9 @@
                             loadPageInitial(); // Reload Data User
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Edit Informasi!', data.pesan, 'error', 0, true, true);
                     }

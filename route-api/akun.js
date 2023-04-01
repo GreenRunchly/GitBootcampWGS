@@ -1,14 +1,15 @@
 const router = require('express').Router();
 
-router.get('/saya', (req, res) => {
+router.get('/saya', (req, res) => { // Mengambil data akun lengkap
 
     let {akun} = req.bridge; // Mengambil data akun 
     
     res.status(200).json({
         pesan : `Berhasil!`, sukses : 1,
-        hasil : [akun]
+        hasil : [akun] // Agar menjadi array bukan object
     });
     return;
+    
 });
 
 module.exports = router;

@@ -7,7 +7,6 @@
         success: function(data) {
             if (data.sukses) {
                 DataAkun = data.hasil[0];
-                //console.log(DataAkun);
             }else{
                 notifAdd('Otentikasi gagal!', data.pesan, 'error', 0, false, true);
                 window.location = '/portal';

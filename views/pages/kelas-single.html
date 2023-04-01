@@ -38,6 +38,9 @@
                     console.log(data.hasil);
                     // notifAdd('Berhasil Mengambil Data (Kelas)!', data.pesan, 'ok', 0, true, false);
                 }else{
+                    if (data.logout){
+                        window.location.reload(); return;
+                    }
                     notifAdd('Gagal Mengambil Data (Kelas)!', data.pesan, 'error', 0, false, true);
                 };
             },
@@ -82,6 +85,9 @@
                     loadPageInformasiData();
                     console.log(data.hasil);
                 }else{
+                    if (data.logout){
+                        window.location.reload(); return;
+                    }
                     notifAdd('Gagal Mengambil Data (Informasi)!', data.pesan, 'error', 0, false, true);
                 };
             },
@@ -166,6 +172,9 @@
                             loadPageInitial(); // Reload Data User
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Tambah Informasi!', data.pesan, 'error', 0, true, true);
                     }
@@ -233,6 +242,9 @@
                             $(".pageInviteCode").val(`${data.hasil}`);
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Generate!', data.pesan, 'error', 0, true, true);
                     }
@@ -303,6 +315,9 @@
                             loadPageInitial(); // Reload Data User
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Edit Kelas!', data.pesan, 'error', 0, true, true);
                     }
@@ -359,6 +374,9 @@
                             window.location = '/kelas';
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Keluar dari kelas!', data.pesan, 'error', 0, true, true);
                     }

@@ -1,81 +1,118 @@
 require('dotenv').config(); // Load Configuration
 const jwt = require('jsonwebtoken');
 const pooldb = require('./module-db');
-const strtotime = require('nodestrtotime');
+// const strtotime = require('nodestrtotime');
 
-let aksiauth = {};
+let aksiauth = {}; // Initial Module
 
 aksiauth.akun = (req, res, next) => {
     
-    let {tokensesi} = req.cookies;
+    let {tokensesi} = req.cookies; // Mengambil tokensesi pada cookie
 
-    // Verifikasi Token Sesi
+    // Verifikasi Token Sesi dengan JWT
     jwt.verify(tokensesi, 'otentikasi', (err, decoded) => {
 
-        // Cek Error pada apikey
-        if (err){
-            if (req.iswebpageroute){
+        if (err){  // Cek error atau tidak
+
+            if (req.passwebpage){ 
+                // Jika webpage
                 res.clearCookie('tokensesi');
-                res.redirect('/portal');
+                res.redirect('/portal'); // Redir ke portal
                 return;
             }else{
+                // Jika API
                 res.clearCookie('tokensesi');
                 res.status(200).json({
-                    pesan : `Otentikasi Token Gagal (${err}), coba lagi nanti..`, error : 1
+                    pesan : `Otentikasi Token Gagal (${err}), coba lagi nanti..`, error : 1, logout : 1
                 });
                 return;
             }
-        }     
+            
+        }else{ // Jika tidak ada error
 
-        // Jika tidak ada error
-        let {username, password, userid} = decoded.data;
+            let {username, password, userid} = decoded.data; // Tarik data coy
 
-        // Cek User Username dan Password dan ID User
-        let sqlsyn = `SELECT * FROM pengguna WHERE id='${userid}' AND username='${username}' AND MD5(password)='${password}'`;
-        pooldb.query( sqlsyn, (err, result) => {
-            // Jika Error Syntax atau semacamnya
-            if (err){
-                if (req.iswebpageroute){
-                    res.clearCookie('tokensesi');
-                    res.redirect('/portal');
-                    return;
-                }else{ 
-                    res.clearCookie('tokensesi');
-                    res.status(200).json({
-                        pesan : `Otentikasi Token Gagal (${err}), coba lagi nanti..`, error : 1
-                    });
-                    return;
+            // Cek User Username dan Password dan ID User
+            let sqlsyn = `
+            SELECT * FROM pengguna 
+            WHERE id= ? AND username= ? AND MD5(password)= ?
+            `;
+            pooldb.query(sqlsyn, [userid, username, password], (err, result) => {
+                
+                // Cek error atau tidak
+                if (err){
+
+                    // Reset login agar tidak ada kerusakan/error mendalam
+                    if (req.passwebpage){
+                        // Jika di webpage
+                        res.clearCookie('tokensesi');
+                        res.redirect('/portal');
+                        return;
+                    }else{ 
+                        // Jika di API
+                        res.clearCookie('tokensesi');
+                        res.status(200).json({
+                            pesan : `Otentikasi Token Gagal (${err}), coba lagi nanti..`, error : 1
+                        });
+                        return;
+                    }
+
+                }else if (result[0]){ // Hanya membutuhkan satu hasil
+
+                    // Process Data User
+                    // result[0].created = strtotime(`${result[0].created}`);
+                    // result[0].updated = strtotime(`${result[0].updated}`);
+                    delete (result[0].password); // Hapus password
+                    req.bridge = {akun:result[0]};
+                    // Next Middleware
+                    next();
+
+                }else{
+
+                    // Reset login agar tidak ada kerusakan/error mendalam
+                    if (req.passwebpage){
+                        // Jika di webpage
+                        res.clearCookie('tokensesi');
+                        res.redirect('/portal');
+                        return;
+                    }else{
+                        // Jika di API
+                        res.clearCookie('tokensesi');
+                        res.status(200).json({
+                            pesan : `Otentikasi Akun Gagal (UserNotFound), logging out...`, error : 1, logout : 1
+                        });
+                    }
+
                 }
-            }
-            // User Pass Checks
-            if (result[0]){
-                // Process Data
-                delete (result[0].password);
-                // result[0].created = strtotime(`${result[0].created}`);
-                // result[0].updated = strtotime(`${result[0].updated}`);
-                req.bridge = {akun:result[0]};
-                // Next Middleware
-                next();
-            }
-        });
+
+            });
+
+        }
     
     });
     
 };
 aksiauth.passwebpage = (req, res, next) =>{
-    req.iswebpageroute = true;
-    next();
+
+    req.passwebpage = true; // Indikator bahwa ini webpage bukan API
+    next(); // Lanjut
+
 }
 aksiauth.noneedlogin = (req, res, next) => {
+
+    // Cek cookie pada browser
     if (!req.cookies.tokensesi){
-        next();
+        next(); // Lanjut
     }else{
-        res.redirect('/dashboard');
+        res.redirect('/dashboard'); // Redir ke dashboard
         return;
     }
+
 };
 aksiauth.next = (req, res, next) => {
-    next();
+
+    next(); // Lanjut aja
+
 };
 
 module.exports = aksiauth;
