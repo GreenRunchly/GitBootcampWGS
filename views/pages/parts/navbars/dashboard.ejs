@@ -1,36 +1,63 @@
 <nav class="side-main">
     <div class="content">
-        <div class="blok-list slide-mobile">
-            <header class="banner color small">
+        <div class="blok-list mobile">
+            <header class="banner small">
                 <div class="title">
                     <h2>Hai, <span class="userAkunSurName"></span>!</h2>
                     <p><span class="userAkunEmail"></span></p>
                 </div>
             </header>
-            <a class="button" onclick="notifShowPanel();">
-                <div class="icon"><i class="fas fa-comment-exclamation"></i></div>
-                <div class="text"><span>Notification</span></div>
-            </a>
-            <hr>
+            <div class="blok-list">    
+                <a class="button" onclick="notifShowPanel();">
+                    <div class="icon"><i class="fas fa-comment-exclamation"></i></div>
+                    <div class="text"><span>Notification</span></div>
+                </a>
+                <a class="button" onclick="modalShow('menuPanel');">
+                    <div class="icon"><i class="fas fa-bars"></i></div>
+                    <div class="text"><span>Menu</span></div>
+                </a>
+                <a class="button" onclick="modalShow('konfirmasiLogout');">
+                    <div class="icon"><i class="fas fa-power-off"></i></div>
+                    <div class="text"><span>Keluar</span></div>
+                </a>
+            </div>
+            
+            </div>
+            
+        </div>
+    </div>
+</nav>
+
+<!-- Menu Panel -->
+<dialog class="notif-panel" id="menuPanel">
+    <div class="panel-back aksiModal" value="close"></div>
+    <div class="content aksiModal" value="close" >
+        <div class="main">
+            <header class="banner color small" cstate="normal">
+                <div class="title">
+                    <h2><i class="fas fa-bars"></i>Main Menu</h2>
+                </div>
+            </header>
             <div class="blok-list">
                 <a class="button" href="/kelas">
                     <div class="icon"><i class="fas fa-chalkboard-teacher"></i></div>
                     <div class="text"><span>Kelas</span></div>
                 </a>
-                <!-- <a class="button" href="/rewards">
+                <a class="button" href="/rewards">
                     <div class="icon"><i class="fas fa-stars"></i></div>
                     <div class="text"><span>Rewards</span></div>
-                </a> -->
+                </a>
                 <a class="button" href="/pengaturan">
                     <div class="icon"><i class="fas fa-user-cog"></i></div>
                     <div class="text"><span>Pengaturan</span></div>
                 </a>
             </div>
-            <hr>
-            <a class="button" onclick="modalShow('konfirmasiLogout');">
-                <div class="icon"><i class="fas fa-power-off"></i></div>
-                <div class="text"><span>Keluar</span></div>
-            </a>
         </div>
     </div>
-</nav>
+    <script>
+        // Handle response masuk modal
+        modalResponse('menuPanel', (modalid) =>{
+            modalHide(modalid);
+        });
+    </script>
+</dialog>

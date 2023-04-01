@@ -7,10 +7,6 @@ html{
 	font-size: 14px;
 	line-height: 1.5;
 	color: black;
-	scrollbar-gutter: both-edges;
-}
-html:has(dialog.notif-panel[open]){
-	scrollbar-gutter: unset;	
 }
 body{
 	/* background-color: #292d33; */
@@ -30,10 +26,14 @@ body{
 }
 body:has(.notif-panel[open]){
 	position: relative;
-	left: -5rem;
+	left: calc( (-100% + 250px) / 8 );
+}
+body:has(.notif-panel.left[open]){
+	position: relative;
+	left: 0rem;
 }
 h1, h2, h3, h4, p{
-	margin:0.4rem;
+	margin:0.2rem;
 	color: black;
 }
 .aksiModal,
@@ -88,9 +88,8 @@ dialog{
 	margin:0rem;
 	border:none;
 	transition: 0.5s;
-	/* overflow: hidden; */
 	background: rgb(0,0,0);
-	background: linear-gradient(180deg, rgba(0,0,0,0.16290266106442575) 0%, rgba(0,211,254,0) 100%);
+	background: linear-gradient(180deg, rgba(0,0,0,0.29735644257703087) 25%, rgba(0,211,254,0) 100%);
 	z-index: 20;
 }
 dialog[open]{
@@ -147,13 +146,25 @@ dialog.notif-panel{
 	left: 100vw;
 	z-index: 9999;
 	background: rgb(0,0,0);
-	background: linear-gradient(270deg, rgba(0,0,0,0.16290266106442575) 0%, rgba(0,211,254,0) 100%);
+	background: linear-gradient(270deg, rgba(0,0,0,0.29735644257703087) 25%, rgba(0,211,254,0) 100%);
 	transition-timing-function:cubic-bezier(1,0.175,0,0.77);
 }
 dialog.notif-panel[open]{
 	display: flex;
 	top: 0;
-	left: 0vh;
+	left: 0vw;
+	transition-timing-function:cubic-bezier(0.77,0,0.175,1);
+}
+dialog.notif-panel.left{
+	justify-content: flex-start;
+	left: -100vw;
+	background: rgb(0,0,0);
+	background: linear-gradient(90deg, rgba(0,0,0,0.29735644257703087) 25%, rgba(0,211,254,0) 100%);
+}
+dialog.notif-panel.left[open]{
+	display: flex;
+	top: 0;
+	left: 0vw;
 	transition-timing-function:cubic-bezier(0.77,0,0.175,1);
 }
 dialog.notif-panel > .content{
@@ -230,7 +241,6 @@ dialog > .panel-back{
 	height: calc(100vh);	
 }
 dialog.notif-panel > .panel-back{
-	
 	transition-timing-function:cubic-bezier(0.77,0,0.175,1);
 }
 
@@ -386,7 +396,6 @@ main > .content > *,
 	justify-content: flex-start;
 	align-items: center;
 	transition: 0.2s;
-	margin-right: 2rem;
 }
 .blok-list > .button > .text span{
 	font-size: 1.4rem;
@@ -492,25 +501,25 @@ main > .content > *,
 	max-width:100%;
 	
 }
+@media screen and (min-width: 880px) {
+	dialog.notif-panel.ignore{
+		pointer-events: none; 
+		background: unset;
+	}
+	dialog.notif-panel.ignore > .content{
+		pointer-events: auto; 
+	}
+	dialog.notif-panel.ignore > .panel-back{
+		pointer-events: none; 
+	}
+}
 
 @media screen and (max-width: 880px) {
-	html{
-		scrollbar-gutter:unset;
-	}
 	main{
-		/* margin-left: auto; */
 		margin-right: auto;
 		border-radius: 0rem 1rem 1rem 1rem;
-		margin-bottom: 6rem;
+		margin-bottom: 0rem;
 		z-index: 5;
-	}
-	.side-main{
-		width: 60px;
-		margin-left: auto;
-		margin-right: 0rem;
-		border-radius: 1rem 0rem 0rem 1rem;
-		/* margin-right: auto; */
-		/* display: none; */
 	}
 	.side-main .blok-list > .button{
 		justify-content: center;
@@ -518,48 +527,14 @@ main > .content > *,
 	.side-main .blok-list > .button > .text {
 		display: none;
 	}
-}
-@media screen and (max-width: 600px) {
+
 	body{
 		display: block;
 	}
 	main{
 		width: auto;
-		margin-top: 0rem;
-		border-radius: 0rem;
-	}
-	.side-main{
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		top:unset;
-		width: -webkit-fill-available;
-		margin:0rem;
-		border-radius: 0rem;
-	}
-	.side-main .blok-list{
-		display: flex;
-		justify-content: center;
-		width: 100%;
-		gap: 0.2rem;
-	}
-	.slide-mobile{
-		display: flex;
-		-ms-overflow-style: none; 
-  		scrollbar-width: none; 
-		overflow: hidden;
-		overflow-x: auto;
-		justify-content: flex-start !important;
-	}
-	.slide-mobile::-webkit-scrollbar {
-		display: none;
-	}
-	.slide-mobile > .button{
-		justify-content: center;
-	}
-	.slide-mobile > .button > .text{
-		display: none;
+		margin-top: 0.5rem;
+		border-radius: 1rem 1rem 0rem 0rem;
 	}
 	dialog.notif-panel{
 		width: 100%;
@@ -569,11 +544,37 @@ main > .content > *,
 		height: calc(100vh - 1.6rem);
 		border-radius: 1rem 0rem 0rem 1rem;
 	}
-	.blok-list > .button > .icon i{
-		font-size: 2rem;
+	dialog.notif-panel.left > .content{
+		border-radius: 0rem 1rem 1rem 0rem;
+	}
+	.side-main{
+		top: 0rem;
+		margin: 0rem;
+		margin-top: 0rem;
+		position: sticky;
+		width: -webkit-fill-available;
+		border-radius: 0rem 0rem 1rem 1rem;
+	}
+	.side-main .blok-list{
+		display: flex;
+		justify-content: center;
+		width: 100%;
+		gap: 0.2rem;
 	}
 	.side-main .blok-list > .button > .icon i{
 		font-size: 1.8rem;
 		font-weight: normal;
+	}
+	.blok-list > .button > .icon i{
+		font-size: 2rem;
+	}
+	.side-main .blok-list.mobile{
+		display: block;
+	}
+	dialog.notif-panel.ignore{
+		pointer-events: auto;
+	}
+	dialog.notif-panel.ignore > .content{
+		pointer-events: auto; 
 	}
 }
