@@ -4,8 +4,8 @@
 <!-- Start Main --><main><div class="content">
 <header class="banner">
     <div class="title">
-        <h1><i class="fas fa-paper-plane"></i><span class="pageTitle"></span></h1>
-        <h4><span class="pageCreated"></span></h4>
+        <h1><span class="pageIcon"></span><span class="pageTitle"></span></h1>
+        <h3><span class="pageCreated"></span></h3>
     </div>
 </header>
 <div class="blok-list word-content pageContent">
@@ -43,11 +43,18 @@
             }
         });
         async function loadPageData() {
+            let icon = '<i class="far fa-bookmark"></i>';
             if (DataPage){
                 $(".pageTitle").html(`${DataPage.title}`);
-                $(".pageCreated").html(`${waktuLocalDate(DataPage.created)}`);
+                $(".pageCreated").html(`${waktuFull(DataPage.created)}`);
                 $(".pageContent").html(`${atob(DataPage.content)}`);
                 $("#editPostForm #input_title").val(`${DataPage.title}`);
+                switch (DataPage.type) {                    
+                    default:
+                        icon = '<i class="far fa-bookmark"></i>';
+                        break;
+                }
+                $(".pageIcon").html(icon);
                 if (DataPage.id_owner != DataAkun.id){
                     $("#edit_post_button").remove();
                 }else{

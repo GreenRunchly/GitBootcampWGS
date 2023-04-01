@@ -6,6 +6,7 @@ const pooldb = require('../module-db');
 const mammoth = require('mammoth');
 
 // Module untuk Validasi input
+const validator = require('validator');
 const midval = require('express-validator');
 function midvalResult(req, res, next) {
     // Validasi Input
@@ -180,6 +181,7 @@ router.get('/:idkelas/informasi/:idinformasi', [
         } else if (result[0]){ // Jika Berhasil ditemukan record pertama
 
             // Encode konten jadi base64
+            result[0].title = validator.unescape(result[0].title);
             result[0].content = Buffer.from(result[0].content).toString('base64');
             // Menampilkan kelas yang join
             res.status(200).json({

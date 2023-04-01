@@ -39,6 +39,7 @@
         $.ajax({
             type: "GET",
             url: '/api/kelas/saya',
+            cache: false,
             success: function(data) {
                 if (data.sukses) {
                     DataAkun.kelas_joined = data.hasil;
@@ -61,7 +62,6 @@
                 $(`.kelasJoinedListing .list-item`).not(':last').remove();
                 $(`.kelasCreatedListing .list-item`).not(':last').remove();
                 dataArray.forEach(element => {
-                    console.log(element);
                     // Strukcture
                     let html = `
                         <a class="banner hoverable small list-item" href="/kelas/${element.id}">

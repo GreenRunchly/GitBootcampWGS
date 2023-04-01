@@ -4,7 +4,7 @@
 <!-- Start Main --><main><div class="content">
 <header class="banner">
     <div class="title">
-        <h1><i class="fas fa-chalkboard"></i><span class="pageClassName"></span></h1>
+        <h1><i class="far fa-chalkboard-teacher"></i><span class="pageClassName"></span></h1>
         <h2><span class="pageClassRoom"></span> - <span class="pageClassSubject"></span></h2>
         <p><span class="pageClassDesc"></span></p>
     </div>
@@ -100,13 +100,20 @@
                 let dataArray = DataPageInformasi;
                 $(`.postListing .list-item`).not(':last').remove();
                 dataArray.forEach(element => {
-                    console.log(element);
+                    let icon = '<i class="far fa-bookmark"></i>';
+                    if (element.type){
+                        switch (element.type) {                    
+                            default:
+                                icon = '<i class="far fa-bookmark"></i>';
+                                break;
+                        }
+                    }
                     // Strukcture
                     let html = `
                         <a class="banner hoverable small list-item" href="/kelas/<?= idkelas ?>/informasi/${element.id}">
                             <div class="title">
-                                <h2><i class="fas fa-paper-plane"></i>${element.title}</h2>
-                                <h4><span>${waktuLocalDate(element.created)}</span></h4>
+                                <h3>${icon}${element.title}</h3>
+                                <p><span>${waktuFull(element.created)}</span></p>
                             </div>
                         </a>
                     `;
@@ -201,6 +208,7 @@
                 <div class="title">
                     <h1><i class="fas fa-key"></i>Kode Undangan</h1>
                     <p>Bagikan kode berikut agar dapat bergabung untuk mengikuti kelas!</p>
+                    <p style="color: red;">Hanya kode undangan yang terakhir dibuat yang valid!</p>
                 </div>
             </header>
             <form id="inviteForm" action="/api/kelas/<?= idkelas ?>/invite" method="post">

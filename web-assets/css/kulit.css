@@ -7,10 +7,14 @@ html{
 	font-size: 14px;
 	line-height: 1.5;
 	color: black;
-	scrollbar-gutter: stable;
+	scrollbar-gutter: both-edges;
+}
+html:has(dialog.notif-panel[open]){
+	scrollbar-gutter: unset;	
 }
 body{
-	background-color: #292d33;
+	/* background-color: #292d33; */
+	background-color: white;
 	position: relative;
 	display: flex;
 	font-family: mainfont;
@@ -82,11 +86,12 @@ dialog{
 	height: 100vh;
 	padding:0rem;
 	margin:0rem;
-	background: rgb(0,0,0);
-	background: linear-gradient(180deg, rgba(0,0,0,0.47942927170868344) 0%, rgba(0,212,255,0) 98%);
 	border:none;
 	transition: 0.5s;
 	/* overflow: hidden; */
+	background: rgb(0,0,0);
+	background: linear-gradient(180deg, rgba(0,0,0,0.16290266106442575) 0%, rgba(0,211,254,0) 100%);
+	z-index: 20;
 }
 dialog[open]{
 	display: flex;
@@ -123,13 +128,14 @@ dialog[open]{
 dialog > .content{
 	width: calc(100% - 1.6rem);
 	max-width: 400px;
-	background-color: #eaf2f6;
+	background-color: #e8f0fe;
 	border-radius: 1rem;
-	border:0.8rem solid #eaf2f6;
+	border:0.8rem solid #e8f0fe;
 	padding: 0rem;
 	animation: dialogContentEffect 0.8s;
-	box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
-	scrollbar-gutter: stable;
+	/* box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px; */
+	box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+	scrollbar-gutter: both-edges;
 	z-index: 99;
 }
 dialog.notif-panel{
@@ -141,7 +147,7 @@ dialog.notif-panel{
 	left: 100vw;
 	z-index: 9999;
 	background: rgb(0,0,0);
-	background: linear-gradient(270deg, rgba(0,0,0,0.28335084033613445) 0%, rgba(0,211,254,0) 100%);
+	background: linear-gradient(270deg, rgba(0,0,0,0.16290266106442575) 0%, rgba(0,211,254,0) 100%);
 	transition-timing-function:cubic-bezier(1,0.175,0,0.77);
 }
 dialog.notif-panel[open]{
@@ -159,7 +165,7 @@ dialog.notif-panel > .content{
 	border:0.8rem solid #eaf2f6;
 	padding: 0rem;
 	animation: notifContentEffect 0.8s;
-	box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+	box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
 	z-index: 99;
 	border-radius: 1rem;
 }
@@ -224,7 +230,7 @@ dialog > .panel-back{
 	height: calc(100vh);	
 }
 dialog.notif-panel > .panel-back{
-	background: linear-gradient(270deg, rgba(0,0,0,0.47942927170868344) 0%, rgba(0,212,255,0) 98%);
+	
 	transition-timing-function:cubic-bezier(0.77,0,0.175,1);
 }
 
@@ -245,6 +251,7 @@ main{
 	background-color: #eaf2f6;
 	border-radius: 1rem;
 	border:0.8rem solid #eaf2f6;
+	box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
 }
 main > .content{
 	display: block;
@@ -272,6 +279,7 @@ main:first-child{
 	background-color: #eaf2f6;
 	border-radius: 1rem;
 	border:0.8rem solid #eaf2f6;
+	box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
 }
 .side-main > .content{
 	display: block;
@@ -457,14 +465,16 @@ main > .content > *,
 	cursor: pointer;
 }
 ::-webkit-scrollbar {
-	width: 10px;
+	width: 6px;
 }
 ::-webkit-scrollbar-track {
 	background-color: unset;
 }
 ::-webkit-scrollbar-thumb {
-	background-color: darkgrey;
-	border-radius: 1rem;
+	background-color: rgba(154, 160, 166, 0.5);
+}
+::-webkit-scrollbar-thumb:hover {
+	background-color: rgba(154, 160, 166, 1);
 }
 
 /* Handle word content */
@@ -474,7 +484,11 @@ main > .content > *,
 	margin-top: 1rem !important;
 }
 .word-content img{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 	max-width:100%;
+	margin: 1rem;
 }
 
 @media screen and (max-width: 880px) {
@@ -486,6 +500,7 @@ main > .content > *,
 		margin-right: auto;
 		border-radius: 0rem 1rem 1rem 1rem;
 		margin-bottom: 6rem;
+		z-index: 5;
 	}
 	.side-main{
 		width: 60px;
@@ -533,6 +548,7 @@ main > .content > *,
   		scrollbar-width: none; 
 		overflow: hidden;
 		overflow-x: auto;
+		justify-content: flex-start !important;
 	}
 	.slide-mobile::-webkit-scrollbar {
 		display: none;
