@@ -9,6 +9,7 @@
         <p><span class="pageClassDesc"></span></p>
     </div>
 </header>
+
 <br><h2>Postingan Terbaru</h2>
 <div class="blok-list postListing">
     <a class="banner hoverable small list-item ghost" onclick="modalShow('addPost');">
@@ -31,6 +32,7 @@
         $.ajax({
             type: "GET",
             url: '/api/kelas/<?= idkelas ?>',
+            cache: false,
             success: function(data) {
                 if (data.sukses) {
                     DataPage = data.hasil[0];
@@ -79,6 +81,7 @@
         $.ajax({
             type: "GET",
             url: '/api/kelas/<?= idkelas ?>/informasi/saya',
+            cache: false,
             success: function(data) {
                 if (data.sukses) {
                     DataPageInformasi = data.hasil;
@@ -241,6 +244,7 @@
                 type: "POST",
                 url: actionUrl,
                 data: form.serialize(),
+                cache: false,
                 success: function(data) {
                     if (data.sukses) {
                         async function lakukan() {
@@ -314,6 +318,7 @@
                 type: "POST",
                 url: actionUrl,
                 data: form.serialize(),
+                cache: false,
                 success: function(data) {
                     if (data.sukses) {
                         async function lakukan() {
@@ -374,6 +379,7 @@
             $.ajax({
                 type: "POST",
                 url: '/api/kelas/<?= idkelas ?>/quit',
+                cache: false,
                 success: function(data) {
                     if (data.sukses) {
                         async function lakukan() {

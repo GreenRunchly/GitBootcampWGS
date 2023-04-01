@@ -4,8 +4,8 @@
 <!-- Start Main --><main><div class="content">
 <header class="banner">
     <div class="title">
-        <h1><span class="userAkunSay"></span>, <span class="userAkunSurName"></span>!</h1>
-        <h3><span class="userAkunEmail"></span> - <span class="userAkunUsername"></span></h3>
+        <h1><span class="dashboardSay"></span></h1>
+        <h3><span class="dashboardSayDesc"></span></h3>
     </div>
 </header>
 </div></main> <!-- End of Main -->
@@ -15,21 +15,20 @@
 <script>
     var DataPage = {};
     function loadPageInitial() {
-        $(".userAkunName").html(`${DataAkun.name}`);
-        $(".userAkunSurName").html(`${(DataAkun.name).split(" ")[0]}`);
-        $(".userAkunEmail").html(`${DataAkun.email}`);
-        $(".userAkunUsername").html(`${DataAkun.username}`);
-
         // Mendapat sapaan berdasarkan waktu
         let curHr = new Date().getHours(); let say = ``;
         if (curHr < 12) {
             say = `<i class="fas fa-sun-haze"></i>Good Morning`;
+            sayDesc = `Minum secangkir kopi untuk memulai hari mu!`;
         } else if (curHr < 18) {
             say = `<i class="fas fa-sun"></i>Good Afternoon`;
+            sayDesc = `Tetap semangat, walau terik matahari!`;
         } else {
             say = `<i class="fas fa-cloud-moon"></i>Good Evening`;
+            sayDesc = `Beristirahat lah hari ini, agar siap untuk esok hari!`;
         }
-        $(".userAkunSay").html(say);
+        $(".dashboardSay").html(say);
+        $(".dashboardSayDesc").html(sayDesc);
     };
 </script>
 <!-- Account Handler End -->

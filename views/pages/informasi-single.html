@@ -27,6 +27,7 @@
         $.ajax({
             type: "GET",
             url: '/api/kelas/<?= idkelas ?>/informasi/<?= idinformasi ?>',
+            cache: false,
             success: function(data) {
                 if (data.sukses) {
                     DataPage = data.hasil[0];

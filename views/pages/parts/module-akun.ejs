@@ -16,6 +16,26 @@
             notifAdd('Otentikasi gagal!', `${error} (${status} / ${status})`, 'error', 0, true, true);
         }
     }).then(() => {
+        loadAccountInitial();
         loadPageInitial();
     });
+    function loadAccountInitial() {
+        if (DataAkun){
+            // Mendapat sapaan berdasarkan waktu
+            let curHr = new Date().getHours(); let say = ``;
+            if (curHr < 12) {
+                say = `<i class="fas fa-sun-haze"></i>`;
+            } else if (curHr < 18) {
+                say = `<i class="fas fa-sun"></i>`;
+            } else {
+                say = `<i class="fas fa-cloud-moon"></i>`;
+            }
+            $(".userAkunSay").html(say);
+            $(".userAkunName").html(`${DataAkun.name}`);
+            $(".userAkunSurName").html(`${(DataAkun.name).split(" ")[0]}`);
+            $(".userAkunEmail").html(`${DataAkun.email}`);
+            $(".userAkunUsername").html(`${DataAkun.username}`);
+        }
+    }
+    
 </script>
