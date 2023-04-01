@@ -48,7 +48,7 @@
             if (DataPage){
                 $(".pageTitle").html(`${DataPage.title}`);
                 $(".pageCreated").html(`${waktuFull(DataPage.created)}`);
-                $(".pageContent").html(`${atob(DataPage.content)}`);
+                $(".pageContent").html(`${Base64.decode(DataPage.content)}`);
                 $("#editPostForm #input_title").val(`${DataPage.title}`);
                 switch (DataPage.type) {                    
                     default:

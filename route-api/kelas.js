@@ -182,7 +182,7 @@ router.get('/:idkelas/informasi/:idinformasi', [
 
             // Encode konten jadi base64
             result[0].title = validator.unescape(result[0].title);
-            result[0].content = Buffer.from(result[0].content).toString('base64');
+            result[0].content = Buffer.from( result[0].content, 'utf8').toString('base64');
             // Menampilkan kelas yang join
             res.status(200).json({
                 pesan : `Berhasil!`, sukses : 1,
@@ -680,7 +680,7 @@ router.post('/:idkelas/informasi/do', [
                                     let sqlsyn = `
                                     UPDATE informasi SET title= ? ,content= ? WHERE id= ? 
                                     `;
-                                    let sqlsyninput = [title, input_content, idrecord];
+                                    let sqlsyninput = [validator.unescape(title), input_content, idrecord];
 
 
                                     pooldb.query( sqlsyn, sqlsyninput, (err, result) => { 
@@ -722,7 +722,7 @@ router.post('/:idkelas/informasi/do', [
                             let sqlsyn = `
                             UPDATE informasi SET title= ? WHERE id= ? 
                             `;
-                            let sqlsyninput = [title, idrecord];
+                            let sqlsyninput = [validator.unescape(title), idrecord];
 
 
                             pooldb.query( sqlsyn, sqlsyninput, (err, result) => { 
@@ -775,7 +775,7 @@ router.post('/:idkelas/informasi/do', [
                             INSERT INTO informasi (id_owner, id_class, title, content) 
                             VALUES ( ?, ?, ?, ? )
                             `;
-                            pooldb.query( sqlsyn, [akun.id, idkelas, title, input_content], (err, result) => { 
+                            pooldb.query( sqlsyn, [akun.id, idkelas, validator.unescape(title), input_content], (err, result) => { 
                             
                                 if (err){ // Cek ada error atau tidak
                                     res.status(200).json({

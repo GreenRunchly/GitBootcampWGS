@@ -89,7 +89,7 @@
         <div class="main">
             <header class="banner small">
                 <div class="title">
-                    <h1><i class="fas fa-project-diagram"></i>Join Kelas</h1>
+                    <h1><i class="fas fa-project-diagram"></i>Join Class</h1>
                     <p>Masukan kode undangan agar bisa mengikuti kelas!</p>
                 </div>
             </header>
@@ -159,17 +159,17 @@
         <div class="main">
             <header class="banner small">
                 <div class="title">
-                    <h1><i class="fas fa-hammer"></i>Buat Kelas</h1>
+                    <h1><i class="fas fa-plus"></i>Create Class</h1>
                     <p>Kelas akan segera dimulai, bersiap lah!</p>
                 </div>
             </header>
             <form id="createForm" action="/api/kelas/create" method="post">
                 <div class="blok-list">
                     <div class="blok-list">
-                        <input type="text" name="name" id="input_name" maxlength="30" placeholder="Masukan Nama Kelas">
-                        <input type="text" name="desc" id="input_desc" maxlength="100" placeholder="Deskripsikan Kelasmu (Opsional)">
-                        <input type="text" name="subject" id="input_subject" placeholder="Apa yang akan diajari?">
-                        <input type="text" name="room" id="input_room" placeholder="Pada ruang berapa?">
+                        <input type="text" name="name" id="input_name" maxlength="30" placeholder="Masukan label kelas.. (Kimia Semester 1)">
+                        <input type="text" name="desc" id="input_desc" maxlength="100" placeholder="Deskripsikan kelasmu.. (Opsional)">
+                        <input type="text" name="subject" id="input_subject" placeholder="Apa yang akan diajari? (Kimia)">
+                        <input type="text" name="room" id="input_room" placeholder="Pada ruang berapa? (10 MIPA 1 / 202)">
                     </div>
                 </div>
             </form>

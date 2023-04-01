@@ -418,7 +418,7 @@ main > .content > *,
 
 .banner{
 	display: flex;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: flex-end;
 	background-position: center;
 	background-size: cover;
@@ -458,6 +458,31 @@ main > .content > *,
 }
 .banner *{
 	color: white;
+}
+.banner > .title:has(.avatar){
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+.banner > .title > .avatar{
+	background-image: url('../img/Twity.png');
+	min-width: 4rem;
+	min-height: 4rem;
+	background-color: white;
+	border-radius: 4rem;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	margin-right: 1rem;
+}
+.banner > .title:has(.avatar) .blok-list{
+	display: block;
+}
+.banner > .title:has(.avatar) .blok-list span{
+	width: -webkit-fill-available;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 /* Other */
 @keyframes spinning {
@@ -499,7 +524,6 @@ main > .content > *,
 	margin-left: auto;
 	margin-right: auto;
 	max-width:100%;
-	
 }
 @media screen and (min-width: 880px) {
 	dialog.notif-panel.ignore{
