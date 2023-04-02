@@ -4,8 +4,8 @@
 <!-- Start Main --><main><div class="content">
 <header class="banner">
     <div class="title">
-        <h1><i class="fas fa-paper-plane"></i><span class="pageTitle"></span></h1>
-        <h4><span class="pageCreated"></span></h4>
+        <h2><span class="pageIcon"></span><span class="pageTitle"></span></h2>
+        <h3><span class="pageCreated"></span></h3>
     </div>
 </header>
 <div class="blok-list word-content pageContent">
@@ -19,11 +19,15 @@
     var DataPage = {}; var DataPageInformasi = {};
     function loadPageInitial() {
         $(".userAkunName").html(`${DataAkun.name}`);
+
+        // Tombol Mundur
+        $(".backPageButton").attr('href', '/kelas/<?= idkelas ?>');
         
         // Load Data Kelas Joined
         $.ajax({
             type: "GET",
             url: '/api/kelas/<?= idkelas ?>/informasi/<?= idinformasi ?>',
+            cache: false,
             success: function(data) {
                 if (data.sukses) {
                     DataPage = data.hasil[0];
@@ -40,11 +44,18 @@
             }
         });
         async function loadPageData() {
+            let icon = '<i class="far fa-bookmark"></i>';
             if (DataPage){
                 $(".pageTitle").html(`${DataPage.title}`);
-                $(".pageCreated").html(`${waktuLocalDate(DataPage.created)}`);
-                $(".pageContent").html(`${atob(DataPage.content)}`);
-                $("#editPostForm #input_title").val(`${DataPage.title}`);
+                $(".pageCreated").html(`${waktuFull(DataPage.created)}`);
+                $(".pageContent").html(`${Base64.decode(DataPage.content)}`);
+                $("#editPostForm #input_title").val( ($('<textarea />').html(DataPage.title).text()) );
+                switch (DataPage.type) {                    
+                    default:
+                        icon = '<i class="far fa-bookmark"></i>';
+                        break;
+                }
+                $(".pageIcon").html(icon);
                 if (DataPage.id_owner != DataAkun.id){
                     $("#edit_post_button").remove();
                 }else{
@@ -73,16 +84,37 @@
             <form id="editPostForm" action="/api/kelas/<?= idkelas ?>/informasi/do" method="post" enctype="multipart/form-data">
                 <div class="blok-list">
                     <div class="blok-list">
-                        <input type="hidden" name="id_informasi" value="<?= idinformasi ?>"/>
-                        <input type="text" name="title" id="input_title" maxlength="60" placeholder="Judul Postingan">
-                        <input type="file" name="content" id="input_content" >
+                        <div class="item-group">
+                            <label>Judul</label>
+                            <input type="text" name="title" id="input_title" maxlength="60" placeholder="Masukan Judul">
+                        </div>
+                        <div class="item-group">
+                            <label>File MS Word</label>
+                            <input type="file" name="content" id="input_content" >
+                        </div>
                     </div>
+                    <div class="blok-list flex">
+                        <div class="item-group">
+                            <label>Topik</label>
+                            <select name="input_type" id="input_type">
+                                <option value="all">Semua Topik</option>
+                            </select>
+                        </div>
+                        <div class="item-group">
+                            <label>Format</label>
+                            <select name="input_type" id="input_type">
+                                <option value="materi">Materi</option>
+                                <option value="tugas">Tugas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" name="idinformasi" value="<?= idinformasi ?>"/>
                 </div>
             </form>
         </div>
         <div class="options">
             <div class="blok-list flex">
-                <button class="button aksiModal" value="download">
+                <button class="button center aksiModal" value="download">
                     <div class="icon"><i class="fas fa-cloud-download"></i></div>
                     <div class="text"><span>Download File</span></div>
                 </button>
@@ -120,6 +152,9 @@
                             loadPageInitial(); // Reload Data User
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Edit Informasi!', data.pesan, 'error', 0, true, true);
                     }

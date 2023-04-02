@@ -5,9 +5,11 @@ const cors = require('cors');
 const useragent = require('express-useragent');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+
 // const jwt = require('jsonwebtoken');
 // const morgan = require('morgan');
 const auth = require('./module-auth');
+const alat = require('./module-tools');
 
 // Init Express App
 const app = express();
@@ -29,15 +31,15 @@ app.set("view options", {
 // Use Cookie
 app.use(cookieParser());
 
-// Use Session
-app.set('trust proxy', 1) // trust first proxy
-app.use(session({
-    name: 'appsession',
-    secret: 'appsession',
-    resave: true,
-    saveUninitialized: false,
-    cookie: { secure: true }
-})) 
+// // Use Session
+// app.set('trust proxy', 1) // trust first proxy
+// app.use(session({
+//     name: 'appsession',
+//     secret: 'appsession',
+//     resave: true,
+//     saveUninitialized: false,
+//     cookie: { secure: true }
+// })) 
 
 // Use UserAgent
 app.use(useragent.express());
@@ -93,4 +95,5 @@ app.listen(WEB_PORT, () => {
     console.log(`Server port ${WEB_PORT} running...`);
 });
 
+// WA OTP Module
 //require('./module-otp');

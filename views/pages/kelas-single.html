@@ -4,11 +4,12 @@
 <!-- Start Main --><main><div class="content">
 <header class="banner">
     <div class="title">
-        <h1><i class="fas fa-chalkboard"></i><span class="pageClassName"></span></h1>
-        <h2><span class="pageClassRoom"></span> - <span class="pageClassSubject"></span></h2>
+        <h2><i class="far fa-chalkboard-teacher"></i><span class="pageClassName"></span></h2>
+        <h3><span class="pageClassRoom"></span> - <span class="pageClassSubject"></span></h3>
         <p><span class="pageClassDesc"></span></p>
     </div>
 </header>
+
 <br><h2>Postingan Terbaru</h2>
 <div class="blok-list postListing">
     <a class="banner hoverable small list-item ghost" onclick="modalShow('addPost');">
@@ -31,6 +32,7 @@
         $.ajax({
             type: "GET",
             url: '/api/kelas/<?= idkelas ?>',
+            cache: false,
             success: function(data) {
                 if (data.sukses) {
                     DataPage = data.hasil[0];
@@ -38,6 +40,9 @@
                     console.log(data.hasil);
                     // notifAdd('Berhasil Mengambil Data (Kelas)!', data.pesan, 'ok', 0, true, false);
                 }else{
+                    if (data.logout){
+                        window.location.reload(); return;
+                    }
                     notifAdd('Gagal Mengambil Data (Kelas)!', data.pesan, 'error', 0, false, true);
                 };
             },
@@ -58,14 +63,14 @@
                     $("#add_informasi_button").remove();
                 }else{
                     $("#konfirmasiQuit .main .title h1").html('Menghapus kelas?');
-                    $("#quit_class_button .text span").html('Hapus Permanen');
+                    $("#quit_class_button .text span").html('Terminate Class');
                     $("#quit_class_button .icon").html('<i class="fas fa-bomb"></i>');
                 }
                 // Isi Edit Kelas
-                $("#editForm #input_name").val(`${DataPage.class_name}`);
-                $("#editForm #input_desc").val(`${DataPage.class_desc}`);
-                $("#editForm #input_subject").val(`${DataPage.subject}`);
-                $("#editForm #input_room").val(`${DataPage.room}`);
+                $("#editForm #input_name").val( ($('<textarea />').html(DataPage.class_name).text()) );
+                $("#editForm #input_desc").val( ($('<textarea />').html(DataPage.class_desc).text()) );
+                $("#editForm #input_subject").val( ($('<textarea />').html(DataPage.subject).text()) );
+                $("#editForm #input_room").val( ($('<textarea />').html(DataPage.room).text()) );
             }else{
                 notifAdd('Access Failed', `Uknown Issue`, 'error', 0, true, true);
                 window.location = '/kelas';
@@ -76,12 +81,16 @@
         $.ajax({
             type: "GET",
             url: '/api/kelas/<?= idkelas ?>/informasi/saya',
+            cache: false,
             success: function(data) {
                 if (data.sukses) {
                     DataPageInformasi = data.hasil;
                     loadPageInformasiData();
                     console.log(data.hasil);
                 }else{
+                    if (data.logout){
+                        window.location.reload(); return;
+                    }
                     notifAdd('Gagal Mengambil Data (Informasi)!', data.pesan, 'error', 0, false, true);
                 };
             },
@@ -94,13 +103,20 @@
                 let dataArray = DataPageInformasi;
                 $(`.postListing .list-item`).not(':last').remove();
                 dataArray.forEach(element => {
-                    console.log(element);
+                    let icon = '<i class="far fa-bookmark"></i>';
+                    if (element.type){
+                        switch (element.type) {                    
+                            default:
+                                icon = '<i class="far fa-bookmark"></i>';
+                                break;
+                        }
+                    }
                     // Strukcture
                     let html = `
                         <a class="banner hoverable small list-item" href="/kelas/<?= idkelas ?>/informasi/${element.id}">
                             <div class="title">
-                                <h2><i class="fas fa-paper-plane"></i>${element.title}</h2>
-                                <h4><span>${waktuLocalDate(element.created)}</span></h4>
+                                <h3>${icon}${element.title}</h3>
+                                <p><span>${waktuFull(element.created)}</span></p>
                             </div>
                         </a>
                     `;
@@ -118,7 +134,7 @@
         <div class="main">
             <header class="banner small">
                 <div class="title">
-                    <h1><i class="fas fa-paper-plane"></i>Tambah Post</h1>
+                    <h1><i class="fas fa-paper-plane"></i>Make a Post</h1>
                     <p>Beritahu informasi kepada peserta!</p>
                     <p>Informasi hanya bisa dipublikasikan berbentuk file Microsoft Word saja!</p>
                 </div>
@@ -126,8 +142,29 @@
             <form id="addPostForm" action="/api/kelas/<?= idkelas ?>/informasi/do" method="post" enctype="multipart/form-data">
                 <div class="blok-list">
                     <div class="blok-list">
-                        <input type="text" name="title" id="input_title" maxlength="30" placeholder="Judul Postingan">
-                        <input type="file" name="content" id="input_content" >
+                        <div class="item-group">
+                            <label>Judul</label>
+                            <input type="text" name="title" id="input_title" maxlength="60" placeholder="Masukan Judul">
+                        </div>
+                        <div class="item-group">
+                            <label>File MS Word</label>
+                            <input type="file" name="content" id="input_content" >
+                        </div>
+                    </div>
+                    <div class="blok-list flex">
+                        <div class="item-group">
+                            <label>Topik</label>
+                            <select name="input_type" id="input_type">
+                                <option value="all">Semua Topik</option>
+                            </select>
+                        </div>
+                        <div class="item-group">
+                            <label>Format</label>
+                            <select name="input_type" id="input_type">
+                                <option value="materi">Materi</option>
+                                <option value="tugas">Tugas</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -166,6 +203,9 @@
                             loadPageInitial(); // Reload Data User
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Tambah Informasi!', data.pesan, 'error', 0, true, true);
                     }
@@ -190,14 +230,18 @@
         <div class="main">
             <header class="banner small">
                 <div class="title">
-                    <h1><i class="fas fa-key"></i>Kode Undangan</h1>
+                    <h1><i class="fas fa-key"></i>Invite Code</h1>
                     <p>Bagikan kode berikut agar dapat bergabung untuk mengikuti kelas!</p>
+                    <p style="color: red;">Hanya kode undangan yang terakhir dibuat yang valid!</p>
                 </div>
             </header>
             <form id="inviteForm" action="/api/kelas/<?= idkelas ?>/invite" method="post">
                 <div class="blok-list">
                     <div class="blok-list flex">
-                        <input style="text-align: center;" type="text" name="invitecode" onclick="autoSelectInput(this);" value="************" maxlength="12" class="pageInviteCode" id="input_invitecode" readonly>
+                        <div class="item-group">
+                            <label>Code</label>
+                            <input style="text-align: center;" type="text" name="invitecode" onclick="autoSelectInput(this);" value="************" maxlength="12" class="pageInviteCode" id="input_invitecode" readonly>
+                        </div>    
                     </div>
                 </div>
             </form>
@@ -224,6 +268,7 @@
                 type: "POST",
                 url: actionUrl,
                 data: form.serialize(),
+                cache: false,
                 success: function(data) {
                     if (data.sukses) {
                         async function lakukan() {
@@ -233,6 +278,9 @@
                             $(".pageInviteCode").val(`${data.hasil}`);
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Generate!', data.pesan, 'error', 0, true, true);
                     }
@@ -257,17 +305,29 @@
         <div class="main">
             <header class="banner small">
                 <div class="title">
-                    <h1><i class="fas fa-pencil-alt"></i>Edit Kelas</h1>
+                    <h1><i class="fas fa-cog"></i>Class Preference</h1>
                     <p>Ubah nama atau subject kelas mu disini!</p>
                 </div>
             </header>
             <form id="editForm" action="/api/kelas/<?= idkelas ?>/edit" method="post">
                 <div class="blok-list">
                     <div class="blok-list">
-                        <input type="text" name="name" id="input_name" maxlength="30" placeholder="Masukan Nama Kelas">
-                        <input type="text" name="desc" id="input_desc" maxlength="100" placeholder="Deskripsikan Kelasmu (Opsional)">
-                        <input type="text" name="subject" id="input_subject" placeholder="Apa yang akan diajari?">
-                        <input type="text" name="room" id="input_room" placeholder="Pada ruang berapa?">
+                        <div class="item-group">
+                            <label>Class Name</label>
+                            <input type="text" name="name" id="input_name" maxlength="30" placeholder="Masukan label kelas.. (Kimia Semester 1)">
+                        </div>
+                        <div class="item-group">
+                            <label>Description</label>
+                            <input type="text" name="desc" id="input_desc" maxlength="100" placeholder="Deskripsikan kelasmu.. (Opsional)">
+                        </div>
+                        <div class="item-group">
+                            <label>Subject</label>
+                            <input type="text" name="subject" id="input_subject" placeholder="Apa yang akan diajari? (Kimia)">
+                        </div>
+                        <div class="item-group">
+                            <label>Room</label>
+                            <input type="text" name="room" id="input_room" placeholder="Pada ruang berapa? (10 MIPA 1 / 202)">
+                        </div> 
                     </div>
                 </div>
             </form>
@@ -294,6 +354,7 @@
                 type: "POST",
                 url: actionUrl,
                 data: form.serialize(),
+                cache: false,
                 success: function(data) {
                     if (data.sukses) {
                         async function lakukan() {
@@ -303,6 +364,9 @@
                             loadPageInitial(); // Reload Data User
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Edit Kelas!', data.pesan, 'error', 0, true, true);
                     }
@@ -351,6 +415,7 @@
             $.ajax({
                 type: "POST",
                 url: '/api/kelas/<?= idkelas ?>/quit',
+                cache: false,
                 success: function(data) {
                     if (data.sukses) {
                         async function lakukan() {
@@ -359,6 +424,9 @@
                             window.location = '/kelas';
                         }; lakukan();
                     }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
                         modalFailed(modalid);
                         notifAdd('Gagal Keluar dari kelas!', data.pesan, 'error', 0, true, true);
                     }

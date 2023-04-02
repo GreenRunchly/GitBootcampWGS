@@ -1,26 +1,60 @@
 <nav class="side-main">
     <div class="content">
-        <div class="blok-list slide-mobile">
-            <a class="button" onclick="notifShowPanel();">
-                <div class="icon"><i class="fas fa-comment-exclamation"></i></div>
-                <div class="text"><span>Notification</span></div>
-            </a>
-            <hr>
-            <div class="blok-list">
-                <a class="button" onclick="modalShow('createKelas');">
-                    <div class="icon"><i class="far fa-plus"></i></div>
-                    <div class="text"><span>Buat Kelas</span></div>
+        <div class="blok-list mobile">
+            <header class="banner small userProfilePicture">
+                <div class="title">
+                    <div class="avatar"></div>
+                    <div class="blok-list">
+                        <h3>Hai, <span class="userAkunSurName"></span>!</h3>
+                        <p><span class="userAkunEmail"></span></p>
+                    </div>
+                </div>
+            </header>
+            <div class="blok-list">    
+                <a class="button" onclick="notifShowPanel();">
+                    <div class="icon"><i class="fas fa-comment-exclamation"></i></div>
+                    <div class="text"><span>Notification</span></div>
                 </a>
-                <a class="button" onclick="modalShow('joinKelas');">
-                    <div class="icon"><i class="fas fa-project-diagram"></i></div>
-                    <div class="text"><span>Join Kelas</span></div>
+                <a class="button" onclick="modalShow('menuPanel');">
+                    <div class="icon"><i class="fas fa-bars"></i></div>
+                    <div class="text"><span>Menu</span></div>
+                </a>
+                <a class="button" href="/dashboard">
+                    <div class="icon"><i class="fas fa-arrow-left"></i></div>
+                    <div class="text"><span>Dashboard</span></div>
                 </a>
             </div>
-            <hr>
-            <a class="button" href="/dashboard">
-                <div class="icon"><i class="fas fa-arrow-left"></i></div>
-                <div class="text"><span>Dashboard</span></div>
-            </a>
         </div>
     </div>
 </nav>
+
+<!-- Menu Panel -->
+<dialog class="notif-panel" id="menuPanel">
+    <div class="panel-back aksiModal" value="close"></div>
+    <div class="content aksiModal" value="close" >
+        <div class="main">
+            <header class="banner color small" cstate="normal">
+                <div class="title">
+                    <h2><i class="fas fa-bars"></i>Menu</h2>
+                </div>
+            </header>
+            <div class="blok-list">
+                <a class="button" onclick="modalShow('createKelas');">
+                    <div class="icon"><i class="far fa-plus"></i></div>
+                    <div class="text"><span>Create Class</span></div>
+                </a>
+                <a class="button" onclick="modalShow('joinKelas');">
+                    <div class="icon"><i class="fas fa-project-diagram"></i></div>
+                    <div class="text"><span>Join Class</span></div>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+    <script>
+        // Handle response masuk modal
+        modalResponse('menuPanel', (modalid) =>{
+            modalHide(modalid);
+        });
+    </script>
+</dialog>

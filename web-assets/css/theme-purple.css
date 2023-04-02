@@ -1,0 +1,31 @@
+body{
+    background-image: unset;
+}
+main, .side-main, dialog > .content, dialog.notif-panel > .content, .banner.color{
+    background-color: #eee1fa;
+    border-color: #eee1fa;
+}
+.banner{
+    background-image: url('../img/banner.jpg');
+}
+input::placeholder{
+    color: #5f6368;
+}
+input{
+    border-color: #7627bb;
+    color: black;
+}
+a{
+    color: #7627bb;
+}
+.blok-list > .button > .text span, .blok-list > .button > .icon i{
+    color: #7627bb;
+}
+dialog.notif-panel > .content .notif-item.temp:hover header,
+.banner.hoverable:hover > .title, .banner.hoverable:active > .title{
+	background-color: #7627bb !important;
+
+}
+.blok-list > .button:hover, .blok-list > .button:active, .blok-list > .button.active{
+    background-color: #7627bb !important;
+}

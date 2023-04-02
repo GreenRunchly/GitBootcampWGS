@@ -2,15 +2,18 @@
 	font-family: mainfont;
 	src: url('../Ubuntu-Regular.ttf');
 }
+* {
+	box-sizing: border-box;
+}
 html{
 	scroll-behavior: smooth;
 	font-size: 14px;
 	line-height: 1.5;
 	color: black;
-	scrollbar-gutter: stable;
 }
 body{
-	background-color: #292d33;
+	/* background-color: #292d33; */
+	background-color: white;
 	position: relative;
 	display: flex;
 	font-family: mainfont;
@@ -26,10 +29,14 @@ body{
 }
 body:has(.notif-panel[open]){
 	position: relative;
-	left: -5rem;
+	left: calc( (-100% + 250px) / 8 );
+}
+body:has(.notif-panel.left[open]){
+	position: relative;
+	left: 0rem;
 }
 h1, h2, h3, h4, p{
-	margin:0.4rem;
+	margin:0.2rem;
 	color: black;
 }
 .aksiModal,
@@ -53,14 +60,15 @@ button{
 	display: block;
 	border: none;
 }
-input{
+input, select{
 	font: unset;
 	display: flex;
 	width: 100%;
 	font-size: 1.2rem;
 	font-weight: normal;
-	border:3px solid #292D33;
-	padding: 0.6rem 1rem;
+	border:2px solid #292D33;
+	padding: 0.6rem 1.4rem;
+	/* background-color: #ced5e3; */
 	background-color: unset;
 	border-radius: 1rem;
 }
@@ -82,11 +90,11 @@ dialog{
 	height: 100vh;
 	padding:0rem;
 	margin:0rem;
-	background: rgb(0,0,0);
-	background: linear-gradient(180deg, rgba(0,0,0,0.47942927170868344) 0%, rgba(0,212,255,0) 98%);
 	border:none;
 	transition: 0.5s;
-	/* overflow: hidden; */
+	background: rgb(0,0,0);
+	background: linear-gradient(180deg, rgba(0,0,0,0.29735644257703087) 25%, rgba(0,211,254,0) 100%);
+	z-index: 20;
 }
 dialog[open]{
 	display: flex;
@@ -123,43 +131,56 @@ dialog[open]{
 dialog > .content{
 	width: calc(100% - 1.6rem);
 	max-width: 400px;
-	background-color: #eaf2f6;
+	background-color: #e8f0fe;
 	border-radius: 1rem;
-	border:0.8rem solid #eaf2f6;
+	border:0.8rem solid #e8f0fe;
 	padding: 0rem;
 	animation: dialogContentEffect 0.8s;
-	box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
-	scrollbar-gutter: stable;
+	/* box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px; */
+	box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+	scrollbar-gutter: both-edges;
 	z-index: 99;
 }
 dialog.notif-panel{
 	justify-content: flex-end;
 	align-items: flex-start;
-	width: calc(100% - 2rem);
+	width: calc(100%);
 	padding: 1rem;
 	top: 0;
 	left: 100vw;
 	z-index: 9999;
 	background: rgb(0,0,0);
-	background: linear-gradient(270deg, rgba(0,0,0,0.28335084033613445) 0%, rgba(0,211,254,0) 100%);
+	background: linear-gradient(270deg, rgba(0,0,0,0.29735644257703087) 25%, rgba(0,211,254,0) 100%);
 	transition-timing-function:cubic-bezier(1,0.175,0,0.77);
 }
 dialog.notif-panel[open]{
 	display: flex;
 	top: 0;
-	left: 0vh;
+	left: 0vw;
+	transition-timing-function:cubic-bezier(0.77,0,0.175,1);
+}
+dialog.notif-panel.left{
+	justify-content: flex-start;
+	left: -100vw;
+	background: rgb(0,0,0);
+	background: linear-gradient(90deg, rgba(0,0,0,0.29735644257703087) 25%, rgba(0,211,254,0) 100%);
+}
+dialog.notif-panel.left[open]{
+	display: flex;
+	top: 0;
+	left: 0vw;
 	transition-timing-function:cubic-bezier(0.77,0,0.175,1);
 }
 dialog.notif-panel > .content{
 	width: calc(100% - 1.6rem);
 	max-width: 260px;
-	height: calc(100vh - 4rem);
+	height: calc(100vh - 2rem);
 	background-color: #eaf2f6;
 	border-radius: 1rem;
 	border:0.8rem solid #eaf2f6;
 	padding: 0rem;
 	animation: notifContentEffect 0.8s;
-	box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+	box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
 	z-index: 99;
 	border-radius: 1rem;
 }
@@ -184,6 +205,7 @@ dialog.notif-panel > .content .notif-item{
 	margin-top: 0.2rem;
 	margin-bottom: 0.2rem;
 	width: 250px;
+	width: 100%;
 	box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
 	border-radius: 1rem;
 }
@@ -224,7 +246,6 @@ dialog > .panel-back{
 	height: calc(100vh);	
 }
 dialog.notif-panel > .panel-back{
-	background: linear-gradient(270deg, rgba(0,0,0,0.47942927170868344) 0%, rgba(0,212,255,0) 98%);
 	transition-timing-function:cubic-bezier(0.77,0,0.175,1);
 }
 
@@ -245,6 +266,7 @@ main{
 	background-color: #eaf2f6;
 	border-radius: 1rem;
 	border:0.8rem solid #eaf2f6;
+	box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
 }
 main > .content{
 	display: block;
@@ -268,10 +290,11 @@ main:first-child{
 	margin-top: 1rem;
 	height: fit-content;
 	max-height: calc(100vh - ( 2rem + 1.6rem));
-	width: 240px;
+	width: 280px;
 	background-color: #eaf2f6;
 	border-radius: 1rem;
 	border:0.8rem solid #eaf2f6;
+	box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
 }
 .side-main > .content{
 	display: block;
@@ -326,6 +349,22 @@ main > .content > *,
 .blok-list > .list-item.ghost:only-child{
 	display: block;
 }
+.blok-list > .item-group{
+	display: block;
+	width: 100%;
+	padding: 0.2rem 0rem;
+}
+.blok-list > .item-group input, .blok-list > .item-group select{
+	padding-top: 0.6rem;
+}
+.blok-list > .item-group label{
+	position: absolute;
+	margin: -0.2rem 0rem 0rem 1rem;
+	padding: 0rem 0.6rem 0rem 0.6rem;
+	/* background-color: #ced5e3; */
+	background-color: #e8f0fe;
+	line-height: 0.8;
+}
 
 /* .blok-list > .box{
 	width: initial;
@@ -357,6 +396,8 @@ main > .content > *,
 	background-color: unset;
 	cursor: pointer;
 	border-radius: 1rem;
+	overflow: hidden;
+	transition: 0.2s;
 }
 .blok-list > .button.center{
 	justify-content: center;
@@ -391,16 +432,22 @@ main > .content > *,
 .blok-list > .button:hover, .blok-list > .button:active, .blok-list > .button.active {
 	background-color: #292d33;
 	border-radius: 1rem;
+	transition: 0.2s;
 }
 .blok-list > .button:active > .text span, .blok-list > .button:active > .icon i,
 .blok-list > .button:hover > .text span, .blok-list > .button:hover > .icon i,
 .blok-list > .button.active > .text span, .blok-list > .button.active > .icon i{
 	color: white;
+	transition: 0.2s;
+}
+.blok-list > .button:active{
+	transition: 0s;
+	background-color: rgba(255, 255, 255, 0.4);
 }
 
 .banner{
 	display: flex;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: flex-end;
 	background-position: center;
 	background-size: cover;
@@ -441,6 +488,35 @@ main > .content > *,
 .banner *{
 	color: white;
 }
+.banner > .title:has(.avatar){
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+.banner > .title > .avatar{
+	background-image: url('../img/Twity.png');
+	min-width: 4rem;
+	min-height: 4rem;
+	background-color: white;
+	border-radius: 4rem;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	margin-right: 1rem;
+}
+.banner > .title:has(.avatar) .blok-list{
+	display: block;
+}
+.banner > .title:has(.avatar) .blok-list span{
+	width: -webkit-fill-available;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.banner > .title .userAkunEmail{
+	display: block;
+	max-width: 140px;
+}
 /* Other */
 @keyframes spinning {
 	from{
@@ -457,14 +533,16 @@ main > .content > *,
 	cursor: pointer;
 }
 ::-webkit-scrollbar {
-	width: 10px;
+	width: 6px;
 }
 ::-webkit-scrollbar-track {
 	background-color: unset;
 }
 ::-webkit-scrollbar-thumb {
-	background-color: darkgrey;
-	border-radius: 1rem;
+	background-color: rgba(154, 160, 166, 0.5);
+}
+::-webkit-scrollbar-thumb:hover {
+	background-color: rgba(154, 160, 166, 1);
 }
 
 /* Handle word content */
@@ -474,26 +552,31 @@ main > .content > *,
 	margin-top: 1rem !important;
 }
 .word-content img{
+	display: block;
+	margin: 1rem;
+	margin-left: auto;
+	margin-right: auto;
 	max-width:100%;
+}
+@media screen and (min-width: 880px) {
+	dialog.notif-panel.ignore{
+		pointer-events: none; 
+		background: unset;
+	}
+	dialog.notif-panel.ignore > .content{
+		pointer-events: auto; 
+	}
+	dialog.notif-panel.ignore > .panel-back{
+		pointer-events: none; 
+	}
 }
 
 @media screen and (max-width: 880px) {
-	html{
-		scrollbar-gutter:unset;
-	}
 	main{
-		/* margin-left: auto; */
 		margin-right: auto;
 		border-radius: 0rem 1rem 1rem 1rem;
-		margin-bottom: 6rem;
-	}
-	.side-main{
-		width: 60px;
-		margin-left: auto;
-		margin-right: 0rem;
-		border-radius: 1rem 0rem 0rem 1rem;
-		/* margin-right: auto; */
-		/* display: none; */
+		margin-bottom: 0rem;
+		z-index: 5;
 	}
 	.side-main .blok-list > .button{
 		justify-content: center;
@@ -501,47 +584,14 @@ main > .content > *,
 	.side-main .blok-list > .button > .text {
 		display: none;
 	}
-}
-@media screen and (max-width: 600px) {
+
 	body{
 		display: block;
 	}
 	main{
 		width: auto;
-		margin-top: 0rem;
-		border-radius: 0rem;
-	}
-	.side-main{
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		top:unset;
-		width: -webkit-fill-available;
-		margin:0rem;
-		border-radius: 0rem;
-	}
-	.side-main .blok-list{
-		display: flex;
-		justify-content: center;
-		width: 100%;
-		gap: 0.2rem;
-	}
-	.slide-mobile{
-		display: flex;
-		-ms-overflow-style: none; 
-  		scrollbar-width: none; 
-		overflow: hidden;
-		overflow-x: auto;
-	}
-	.slide-mobile::-webkit-scrollbar {
-		display: none;
-	}
-	.slide-mobile > .button{
-		justify-content: center;
-	}
-	.slide-mobile > .button > .text{
-		display: none;
+		margin-top: 0.5rem;
+		border-radius: 1rem 1rem 0rem 0rem;
 	}
 	dialog.notif-panel{
 		width: 100%;
@@ -551,11 +601,37 @@ main > .content > *,
 		height: calc(100vh - 1.6rem);
 		border-radius: 1rem 0rem 0rem 1rem;
 	}
-	.blok-list > .button > .icon i{
-		font-size: 2rem;
+	dialog.notif-panel.left > .content{
+		border-radius: 0rem 1rem 1rem 0rem;
+	}
+	.side-main{
+		top: 0rem;
+		margin: 0rem;
+		margin-top: 0rem;
+		position: sticky;
+		width: -webkit-fill-available;
+		border-radius: 0rem 0rem 1rem 1rem;
+	}
+	.side-main .blok-list{
+		display: flex;
+		justify-content: center;
+		width: 100%;
+		gap: 0.2rem;
 	}
 	.side-main .blok-list > .button > .icon i{
 		font-size: 1.8rem;
 		font-weight: normal;
+	}
+	.blok-list > .button > .icon i{
+		font-size: 2rem;
+	}
+	.side-main .blok-list.mobile{
+		display: block;
+	}
+	dialog.notif-panel.ignore{
+		pointer-events: auto;
+	}
+	dialog.notif-panel.ignore > .content{
+		pointer-events: auto; 
 	}
 }
