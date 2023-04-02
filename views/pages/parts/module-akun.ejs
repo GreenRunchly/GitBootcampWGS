@@ -35,7 +35,8 @@
             $(".userAkunSurName").html(`${(DataAkun.name).split(" ")[0]}`);
             $(".userAkunEmail").html(`${DataAkun.email}`);
             $(".userAkunUsername").html(`${DataAkun.username}`);
-            //$(".userProfilePicture").css('background-image', `url('https://lh3.googleusercontent.com/a/AGNmyxaIEcmUqYsW_Mx2t6y3fq2aFU-pOS7ZHt6TiVmD7Q=s96-c')`);
+            
+            $(".userProfilePicture .avatar").css('background-image', `url('https://www.gravatar.com/avatar/${MD5(DataAkun.email)}')`);
         }
     }
     

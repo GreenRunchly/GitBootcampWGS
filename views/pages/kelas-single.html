@@ -67,10 +67,10 @@
                     $("#quit_class_button .icon").html('<i class="fas fa-bomb"></i>');
                 }
                 // Isi Edit Kelas
-                $("#editForm #input_name").val(`${DataPage.class_name}`);
-                $("#editForm #input_desc").val(`${DataPage.class_desc}`);
-                $("#editForm #input_subject").val(`${DataPage.subject}`);
-                $("#editForm #input_room").val(`${DataPage.room}`);
+                $("#editForm #input_name").val( ($('<textarea />').html(DataPage.class_name).text()) );
+                $("#editForm #input_desc").val( ($('<textarea />').html(DataPage.class_desc).text()) );
+                $("#editForm #input_subject").val( ($('<textarea />').html(DataPage.subject).text()) );
+                $("#editForm #input_room").val( ($('<textarea />').html(DataPage.room).text()) );
             }else{
                 notifAdd('Access Failed', `Uknown Issue`, 'error', 0, true, true);
                 window.location = '/kelas';
@@ -142,8 +142,29 @@
             <form id="addPostForm" action="/api/kelas/<?= idkelas ?>/informasi/do" method="post" enctype="multipart/form-data">
                 <div class="blok-list">
                     <div class="blok-list">
-                        <input type="text" name="title" id="input_title" maxlength="30" placeholder="Judul Postingan">
-                        <input type="file" name="content" id="input_content" >
+                        <div class="item-group">
+                            <label>Judul</label>
+                            <input type="text" name="title" id="input_title" maxlength="60" placeholder="Masukan Judul">
+                        </div>
+                        <div class="item-group">
+                            <label>File MS Word</label>
+                            <input type="file" name="content" id="input_content" >
+                        </div>
+                    </div>
+                    <div class="blok-list flex">
+                        <div class="item-group">
+                            <label>Topik</label>
+                            <select name="input_type" id="input_type">
+                                <option value="all">Semua Topik</option>
+                            </select>
+                        </div>
+                        <div class="item-group">
+                            <label>Format</label>
+                            <select name="input_type" id="input_type">
+                                <option value="materi">Materi</option>
+                                <option value="tugas">Tugas</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -217,7 +238,10 @@
             <form id="inviteForm" action="/api/kelas/<?= idkelas ?>/invite" method="post">
                 <div class="blok-list">
                     <div class="blok-list flex">
-                        <input style="text-align: center;" type="text" name="invitecode" onclick="autoSelectInput(this);" value="************" maxlength="12" class="pageInviteCode" id="input_invitecode" readonly>
+                        <div class="item-group">
+                            <label>Code</label>
+                            <input style="text-align: center;" type="text" name="invitecode" onclick="autoSelectInput(this);" value="************" maxlength="12" class="pageInviteCode" id="input_invitecode" readonly>
+                        </div>    
                     </div>
                 </div>
             </form>
@@ -288,10 +312,22 @@
             <form id="editForm" action="/api/kelas/<?= idkelas ?>/edit" method="post">
                 <div class="blok-list">
                     <div class="blok-list">
-                        <input type="text" name="name" id="input_name" maxlength="30" placeholder="Masukan Nama Kelas">
-                        <input type="text" name="desc" id="input_desc" maxlength="100" placeholder="Deskripsikan Kelasmu (Opsional)">
-                        <input type="text" name="subject" id="input_subject" placeholder="Apa yang akan diajari?">
-                        <input type="text" name="room" id="input_room" placeholder="Pada ruang berapa?">
+                        <div class="item-group">
+                            <label>Class Name</label>
+                            <input type="text" name="name" id="input_name" maxlength="30" placeholder="Masukan label kelas.. (Kimia Semester 1)">
+                        </div>
+                        <div class="item-group">
+                            <label>Description</label>
+                            <input type="text" name="desc" id="input_desc" maxlength="100" placeholder="Deskripsikan kelasmu.. (Opsional)">
+                        </div>
+                        <div class="item-group">
+                            <label>Subject</label>
+                            <input type="text" name="subject" id="input_subject" placeholder="Apa yang akan diajari? (Kimia)">
+                        </div>
+                        <div class="item-group">
+                            <label>Room</label>
+                            <input type="text" name="room" id="input_room" placeholder="Pada ruang berapa? (10 MIPA 1 / 202)">
+                        </div> 
                     </div>
                 </div>
             </form>

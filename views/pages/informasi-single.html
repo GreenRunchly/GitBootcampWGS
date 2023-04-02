@@ -49,7 +49,7 @@
                 $(".pageTitle").html(`${DataPage.title}`);
                 $(".pageCreated").html(`${waktuFull(DataPage.created)}`);
                 $(".pageContent").html(`${Base64.decode(DataPage.content)}`);
-                $("#editPostForm #input_title").val(`${DataPage.title}`);
+                $("#editPostForm #input_title").val( ($('<textarea />').html(DataPage.title).text()) );
                 switch (DataPage.type) {                    
                     default:
                         icon = '<i class="far fa-bookmark"></i>';
@@ -84,10 +84,31 @@
             <form id="editPostForm" action="/api/kelas/<?= idkelas ?>/informasi/do" method="post" enctype="multipart/form-data">
                 <div class="blok-list">
                     <div class="blok-list">
-                        <input type="hidden" name="idinformasi" value="<?= idinformasi ?>"/>
-                        <input type="text" name="title" id="input_title" maxlength="60" placeholder="Judul Postingan">
-                        <input type="file" name="content" id="input_content" >
+                        <div class="item-group">
+                            <label>Judul</label>
+                            <input type="text" name="title" id="input_title" maxlength="60" placeholder="Masukan Judul">
+                        </div>
+                        <div class="item-group">
+                            <label>File MS Word</label>
+                            <input type="file" name="content" id="input_content" >
+                        </div>
                     </div>
+                    <div class="blok-list flex">
+                        <div class="item-group">
+                            <label>Topik</label>
+                            <select name="input_type" id="input_type">
+                                <option value="all">Semua Topik</option>
+                            </select>
+                        </div>
+                        <div class="item-group">
+                            <label>Format</label>
+                            <select name="input_type" id="input_type">
+                                <option value="materi">Materi</option>
+                                <option value="tugas">Tugas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" name="idinformasi" value="<?= idinformasi ?>"/>
                 </div>
             </form>
         </div>

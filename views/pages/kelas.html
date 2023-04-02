@@ -96,7 +96,10 @@
             <form id="joinForm" action="/api/kelas/join" method="post">
                 <div class="blok-list">
                     <div class="blok-list flex">
-                        <input style="text-align: center;" type="text" name="invitecode" maxlength="12" id="input_invitecode" placeholder="Masukan Kode Undangan">
+                        <div class="item-group">
+                            <label>Code</label>
+                            <input style="text-align: center;" type="text" name="invitecode" maxlength="12" id="input_invitecode" placeholder="Masukan Kode Undangan">
+                        </div>
                     </div>
                 </div>
             </form>
@@ -166,10 +169,22 @@
             <form id="createForm" action="/api/kelas/create" method="post">
                 <div class="blok-list">
                     <div class="blok-list">
-                        <input type="text" name="name" id="input_name" maxlength="30" placeholder="Masukan label kelas.. (Kimia Semester 1)">
-                        <input type="text" name="desc" id="input_desc" maxlength="100" placeholder="Deskripsikan kelasmu.. (Opsional)">
-                        <input type="text" name="subject" id="input_subject" placeholder="Apa yang akan diajari? (Kimia)">
-                        <input type="text" name="room" id="input_room" placeholder="Pada ruang berapa? (10 MIPA 1 / 202)">
+                        <div class="item-group">
+                            <label>Class Name</label>
+                            <input type="text" name="name" id="input_name" maxlength="30" placeholder="Masukan label kelas.. (Kimia Semester 1)">
+                        </div>
+                        <div class="item-group">
+                            <label>Description</label>
+                            <input type="text" name="desc" id="input_desc" maxlength="100" placeholder="Deskripsikan kelasmu.. (Opsional)">
+                        </div>
+                        <div class="item-group">
+                            <label>Subject</label>
+                            <input type="text" name="subject" id="input_subject" placeholder="Apa yang akan diajari? (Kimia)">
+                        </div>
+                        <div class="item-group">
+                            <label>Room</label>
+                            <input type="text" name="room" id="input_room" placeholder="Pada ruang berapa? (10 MIPA 1 / 202)">
+                        </div>
                     </div>
                 </div>
             </form>

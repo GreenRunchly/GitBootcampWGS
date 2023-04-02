@@ -138,6 +138,9 @@ router.get('/:idkelas/informasi/saya', [
             });
             return;
         } else if (result[0]) {
+            // Encode konten jadi html entiies
+            result[0].title = validator.unescape(result[0].title);
+
             // Menampilkan kelas yang join
             res.status(200).json({
                 pesan : `Postingan kelas berhasil diambil!`, sukses : 1,
@@ -161,6 +164,11 @@ router.get('/:idkelas/informasi/:idinformasi', [
     midval.param('idinformasi').not().isEmpty().withMessage('ID Postingan tidak terdeteksi!').trim().escape(),
 ], (req, res) => {
 
+    // Cek Error pada validasi input
+    if ( midvalResult(req, res) ){ // Jika ditemukan masalah akan return true
+        return; // Untuk menghentikan eksekusi lanjutan
+    }
+
     let {akun} = req.bridge; // Mengambil data akun
     let {idkelas, idinformasi} = req.params;
 
@@ -180,7 +188,7 @@ router.get('/:idkelas/informasi/:idinformasi', [
             return;
         } else if (result[0]){ // Jika Berhasil ditemukan record pertama
 
-            // Encode konten jadi base64
+            // Encode konten jadi base64 dan ubah title entities
             result[0].title = validator.unescape(result[0].title);
             result[0].content = Buffer.from( result[0].content, 'utf8').toString('base64');
             // Menampilkan kelas yang join
@@ -209,9 +217,14 @@ router.post('/:idkelas/edit',[
     midval.body('room').isLength({ min: 1 }).withMessage('Ruangan tidak boleh kosong!').trim().escape(),
 ], (req, res) => {
 
+    // Cek Error pada validasi input
+    if ( midvalResult(req, res) ){ // Jika ditemukan masalah akan return true
+        return; // Untuk menghentikan eksekusi lanjutan
+    }
+
     let {akun} = req.bridge; // Mengambil data akun
     let {name, desc, subject, room} = req.body; // Mengambil data kelas
-    let {idkelas} = req.params; // Parameter kelas
+    let {idkelas} = req.params; // Parameter kelas   
 
     // Cek Ada di kelas tersebut atau tidak
     let sqlsyn = `
@@ -275,6 +288,11 @@ router.post('/:idkelas/edit',[
 router.post('/:idkelas/quit', [
     midval.param('idkelas').not().isEmpty().withMessage('ID Kelas tidak terdeteksi!').trim().escape()
 ], (req, res) => {
+
+    // Cek Error pada validasi input
+    if ( midvalResult(req, res) ){ // Jika ditemukan masalah akan return true
+        return; // Untuk menghentikan eksekusi lanjutan
+    }
 
     let {akun} = req.bridge; // Mengambil data akun
     let {idkelas} = req.params; // Parameter kelas
@@ -362,6 +380,11 @@ router.post('/:idkelas/quit', [
 router.post('/:idkelas/invite', [
     midval.param('idkelas').not().isEmpty().withMessage('ID Kelas tidak terdeteksi!').trim().escape()
 ], (req, res) => {
+
+    // Cek Error pada validasi input
+    if ( midvalResult(req, res) ){ // Jika ditemukan masalah akan return true
+        return; // Untuk menghentikan eksekusi lanjutan
+    }
 
     let {akun} = req.bridge; // Mengambil data akun
     let {idkelas} = req.params;
@@ -680,8 +703,8 @@ router.post('/:idkelas/informasi/do', [
                                     let sqlsyn = `
                                     UPDATE informasi SET title= ? ,content= ? WHERE id= ? 
                                     `;
-                                    let sqlsyninput = [validator.unescape(title), input_content, idrecord];
-
+                                    let sqlsyninput = [validator.escape(title), input_content, idrecord];
+                                    
 
                                     pooldb.query( sqlsyn, sqlsyninput, (err, result) => { 
                                         
@@ -722,8 +745,7 @@ router.post('/:idkelas/informasi/do', [
                             let sqlsyn = `
                             UPDATE informasi SET title= ? WHERE id= ? 
                             `;
-                            let sqlsyninput = [validator.unescape(title), idrecord];
-
+                            let sqlsyninput = [validator.escape(title), idrecord];
 
                             pooldb.query( sqlsyn, sqlsyninput, (err, result) => { 
                                 
@@ -775,7 +797,7 @@ router.post('/:idkelas/informasi/do', [
                             INSERT INTO informasi (id_owner, id_class, title, content) 
                             VALUES ( ?, ?, ?, ? )
                             `;
-                            pooldb.query( sqlsyn, [akun.id, idkelas, validator.unescape(title), input_content], (err, result) => { 
+                            pooldb.query( sqlsyn, [akun.id, idkelas, validator.escape(title), input_content], (err, result) => { 
                             
                                 if (err){ // Cek ada error atau tidak
                                     res.status(200).json({
