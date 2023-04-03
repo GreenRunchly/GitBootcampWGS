@@ -58,6 +58,7 @@
                 $(".pageIcon").html(icon);
                 if (DataPage.id_owner != DataAkun.id){
                     $("#edit_post_button").remove();
+                    $("#hapus_post_button").remove();
                 }else{
                     
                 }
@@ -93,7 +94,7 @@
                             <input type="file" name="content" id="input_content" >
                         </div>
                     </div>
-                    <!-- <div class="blok-list flex">
+                    <div class="blok-list flex">
                         <div class="item-group">
                             <label>Topik</label>
                             <select name="input_type" id="input_type">
@@ -107,7 +108,7 @@
                                 <option value="tugas">Tugas</option>
                             </select>
                         </div>
-                    </div> -->
+                    </div>
                     <input type="hidden" name="idinformasi" value="<?= idinformasi ?>"/>
                 </div>
             </form>
@@ -174,6 +175,66 @@
                     // Buat, Klik, Hapus
                     document.body.appendChild(dlFileTag); dlFileTag.click(); document.body.removeChild(dlFileTag);
                 }
+            }; lakukan(); 
+        });
+    </script>
+</dialog>
+
+<!-- Keluar dari kelas -->
+<dialog id="hapusPost">
+    <div class="panel-back aksiModal" value="close"></div>
+    <div class="content">
+        <div class="main">
+            <header class="banner small">
+                <div class="title">
+                    <h1>Delete This Post?</h1>
+                    <p>Tindakan ini bersifat permanen, yakin?</p>
+                </div>
+            </header>
+        </div>
+        <div class="options">
+            <div class="blok-list flex">
+                <button class="button aksiModal" value="ok">
+                    <div class="icon"><i class="far fa-check"></i></div>
+                    <div class="text"><span>Hapus</span></div>
+                </button>
+                <button class="button aksiModal" value="batal">
+                    <div class="icon"><i class="far fa-times"></i></div>
+                    <div class="text"><span>Tidak Jadi</span></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Handle response masuk modal
+        modalResponse('hapusPost', (modalid) =>{
+            $.ajax({
+                type: "POST",
+                url: '/api/kelas/<?= idkelas ?>/informasi/<?= idinformasi ?>/delete',
+                cache: false,
+                success: function(data) {
+                    if (data.sukses) {
+                        async function lakukan() {
+                            await notifAdd('Berhasil menghapus postingan!', data.pesan, 'ok', 0, true, true);
+                            await modalHide(modalid);
+                            window.location = '/kelas/<?= idkelas ?>';
+                        }; lakukan();
+                    }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
+                        modalFailed(modalid);
+                        notifAdd('Gagal menghapus postingan!', data.pesan, 'error', 0, true, true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    modalFailed(modalid);
+                    notifAdd('Gagal menghapus postingan!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+                }
+            });
+        }, (modalid) =>{
+            async function lakukan() {
+                await modalHide(modalid);
             }; lakukan(); 
         });
     </script>
