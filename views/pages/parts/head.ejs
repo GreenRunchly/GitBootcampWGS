@@ -260,12 +260,19 @@
     }
     
     $(document).ready(function() {
+        $(document).on('click', `a[href]`, function() {
+            if ( $(this).attr('href') != '#' ){
+                $('body').prepend(`
+                    <?- include('loading-screen') ?>
+                `);
+            }
+        });
 
         // Agar formulir tidak teraksekusi saat tekan enter
         $(window).keydown(function(event){
             if(event.keyCode == 13) {
-            event.preventDefault();
-            return false;
+                event.preventDefault();
+                return false;
             }
         });   
 
@@ -276,6 +283,7 @@
         $(".loadingScreen").addClass(`done`); // Tambahkan efek hide
         setInterval(() => {
             $(".loadingScreen").remove(); // Menghilangkan loading screen
+            clearInterval(this);
         }, 1000);
     } 
     
