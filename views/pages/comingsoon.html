@@ -24,7 +24,11 @@
     <script>
         // Handle response masuk modal
         modalResponse('modalLater', (modalid) =>{
-            history.back()
+            if (document.referrer == window.location.href){
+                window.location.replace(document.referrer);
+            }else{
+                window.location = '/';
+            }
         });
     </script>
 </dialog>
