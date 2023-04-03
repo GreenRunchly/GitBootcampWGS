@@ -22,7 +22,7 @@ body{
 	left: 0px;
 	transition: 0.5s;
 	transition-timing-function:cubic-bezier(0.77,0,0.175,1);
-	background-image: url('../img/banner.png');
+	background-image: url('../img/bg.jpg');
 	background-size: cover;
 	background-position: center;
 	background-attachment: fixed;
@@ -439,7 +439,7 @@ main > .content > *,
 	align-items: flex-end;
 	background-position: center;
 	background-size: cover;
-	background-image: url('../img/theme4.png');
+	background-image: url('../img/banner.jpg');
 	min-height: 200px;
 	border-radius: 1rem;
 	overflow: hidden;
