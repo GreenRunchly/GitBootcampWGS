@@ -27,14 +27,14 @@ body{
 	background-position: center;
 	background-attachment: fixed;
 }
-body:has(.notif-panel[open]){
+/* body:has(.notif-panel[open]){
 	position: relative;
 	left: calc( (-100% + 250px) / 8 );
 }
 body:has(.notif-panel.left[open]){
 	position: relative;
 	left: 0rem;
-}
+} */
 h1, h2, h3, h4, p{
 	margin:0.2rem;
 	color: black;
