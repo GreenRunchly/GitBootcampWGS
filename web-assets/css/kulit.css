@@ -101,34 +101,6 @@ dialog[open]{
 	display: flex;
 	top: 0vh;
 }
-@keyframes dialogContentEffect {
-	0%{
-		position: relative;
-		top: -100vh;
-	}
-	20% {
-		position: relative;
-		top: -100vh;
-	}
-	100% {
-		position: relative;
-		top: 0vh;
-	}
-}
-@keyframes notifContentEffect {
-	0%{
-		position: relative;
-		left: 100vw;
-	}
-	20% {
-		position: relative;
-		left: 100vw;
-	}
-	100% {
-		position: relative;
-		left: 0vw;
-	}
-}
 dialog > .content{
 	width: calc(100% - 1.6rem);
 	max-width: 400px;
@@ -136,7 +108,6 @@ dialog > .content{
 	border-radius: 1rem;
 	border:0.8rem solid #e8f0fe;
 	padding: 0rem;
-	animation: dialogContentEffect 0.8s;
 	/* box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px; */
 	box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
 	scrollbar-gutter: both-edges;
@@ -182,10 +153,10 @@ dialog.notif-panel > .content{
 	border-radius: 1rem;
 	border:0.8rem solid #eaf2f6;
 	padding: 0rem;
-	animation: notifContentEffect 0.8s;
 	box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
 	z-index: 99;
 	border-radius: 1rem;
+	overflow: unset;
 }
 dialog[open].notif-panel > .content{
 	overflow-y: auto;
@@ -216,7 +187,7 @@ dialog[open].notif-panel > .content .notif-item{
 	box-shadow: none;
 }
 dialog.notif-panel > .content .notif-item.popup{
-	animation: popupeffect 3s;
+	animation: popupeffect 4s;
 }
 dialog.notif-panel > .content .notif-item.new{
 	left: calc(100vw - 240px);
