@@ -1,14 +1,13 @@
 const router = require('express').Router();
-const md5 = require('md5');
-const jwt = require('jsonwebtoken');
 // Module untuk koneksi database
 const pooldb = require('../module-db');
 // Module untuk Validasi input
 const modval = require('../module-validator');
 
-router.get('/:idakun', [
-    modval.midval.param('idakun').not().isEmpty().withMessage('ID Akun tidak terdeteksi!').trim().escape()
-], (req, res) => { // Masuk akun pertama kali untuk mendapatkan token
+// Mengambil Kelas spesifik dan hanya bisa akses data penting jika sudah bergabung (jika public)
+router.get('/:idkelas', [
+    modval.midval.param('idkelas').not().isEmpty().withMessage('ID Kelas tidak terdeteksi!').trim().escape()
+], (req, res) => {
 
     // Cek Error pada validasi input
     if ( modval.midvalResult(req, res) ){ // Jika ditemukan masalah akan return true
@@ -16,26 +15,21 @@ router.get('/:idakun', [
     }
 
     let {akun} = req.bridge; // Mengambil data akun
-    let idakun = req.params.idakun; // Mengambil id kelas sesuai request
+    let idkelas = req.params.idkelas; // Mengambil id kelas sesuai request
 
     // Init SQL Query Syntax
     let sqlsyn = ``; let sqlparams = [];
 
-    // Jika id atau username akun sama dengan yang sedang login
-    if ( (akun.id == idakun) || (akun.username == idakun) ) {
-        // Mengambil data siswa secara lengkap
-        sqlsyn += `
-        SELECT * FROM pengguna 
-        WHERE id = ? OR username = ?
-        `;
-    }else{
-        // Mengambil data siswa secara umum
-        sqlsyn += `
-        SELECT id, username, name, created FROM pengguna 
-        WHERE id = ? OR username = ?
-        `;
-    }
-    sqlparams.push(idakun, idakun);
+    // Mengambil daftar kelas yang dibuat dan join
+    sqlsyn += `
+    SELECT k.*, peng.name as class_owner_name, peng.id as class_owner_id FROM pengguna_class_joined p 
+    /* Ambil Data Kelas */
+    JOIN kelas k ON k.id = p.id_class 
+    /* Ambil Data Identitas Pemilik Kelas */
+    JOIN pengguna peng ON peng.id = k.id_owner 
+    WHERE p.id_owner = ? AND p.id_class = ?;
+    `;
+    sqlparams.push(akun.id, idkelas);
 
     // Eksekusi Query
     pooldb.query( sqlsyn, sqlparams, (err, result) => { 
@@ -51,21 +45,22 @@ router.get('/:idakun', [
             if (result[0]){
                 // Menampilkan kelas yang sudah join
                 res.status(200).json({
-                    pesan : `Peserta ditemukan!`, sukses : 1,
+                    pesan : `Kelas ditemukan!`, sukses : 1,
                     hasil : result
                 });
                 return;
             }else{
                 // Menampilkan kelas yang sudah join
                 res.status(200).json({
-                    pesan : `Peserta yang dimaksud tidak ditemukan!`, error : 1
+                    pesan : `Kelas yang dimaksud tidak ditemukan!`, error : 1
                 });
                 return;
             }
             
+
         };
     });
-
+    
 });
 
 module.exports = router;

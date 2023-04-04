@@ -377,7 +377,7 @@
         modalResponse('konfirmasiLogout', (modalid) =>{
             $.ajax({
                 type: "POST",
-                url: '/api/akses/akun/keluar',
+                url: '/api/akun/keluar',
                 success: function(data) {
                     if (data.sukses) {
                         async function lakukan() {
