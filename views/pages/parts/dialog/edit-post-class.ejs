@@ -1,0 +1,108 @@
+<dialog id="editPost">
+    <div class="panel-back aksiModal" value="close"></div>
+    <div class="content">
+        <div class="main">
+            <header class="banner small">
+                <div class="title">
+                    <h1><i class="fas fa-paper-plane"></i>Edit Post</h1>
+                    <p style="color:red;">Edit konten hanya bisa menimpah, bukan mengubah sebagian, jadi download terlebih dahulu file ini, dan edit, lalu upload kembali!</p>
+                    <p>Informasi hanya bisa dipublikasikan berbentuk file Microsoft Word saja!</p>
+                </div>
+            </header>
+            <form id="editPostForm" action="/api/kelas/<?= idkelas ?>/informasi/do" method="post" enctype="multipart/form-data">
+                <div class="blok-list">
+                    <div class="blok-list">
+                        <div class="item-group">
+                            <label>Judul</label>
+                            <input type="text" name="title" id="input_title" maxlength="60" placeholder="Masukan Judul">
+                        </div>
+                        <div class="item-group">
+                            <label>File MS Word</label>
+                            <input type="file" name="content" id="input_content" >
+                        </div>
+                    </div>
+                    <div class="blok-list flex">
+                        <div class="item-group">
+                            <label>Topik</label>
+                            <select name="input_type" id="input_type">
+                                <option value="all">Semua Topik</option>
+                            </select>
+                        </div>
+                        <div class="item-group">
+                            <label>Format</label>
+                            <select name="input_type" id="input_type">
+                                <option value="materi">Materi</option>
+                                <option value="evaluasi">Evaluasi</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" name="idinformasi" value="<?= idinformasi ?>"/>
+                </div>
+            </form>
+        </div>
+        <div class="options">
+            <div class="blok-list flex">
+                <button class="button center aksiModal" value="download">
+                    <div class="icon"><i class="fas fa-cloud-download"></i></div>
+                    <div class="text"><span>Download File</span></div>
+                </button>
+            </div>
+            <div class="blok-list flex">
+                <button class="button aksiModal" value="ok">
+                    <div class="icon"><i class="far fa-check"></i></div>
+                    <div class="text"><span>Simpan</span></div>
+                </button>
+                <button class="button aksiModal" value="batal">
+                    <div class="icon"><i class="far fa-times"></i></div>
+                    <div class="text"><span>Tidak Jadi</span></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Handle response masuk modal
+        modalResponse('editPost', (modalid) =>{
+            let form = $(`#editPostForm`);
+            let actionUrl = form.attr('action');
+            $.ajax({
+                type: "POST",
+                url: actionUrl,
+                data: new FormData($(`#editPostForm`)[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    if (data.sukses) {
+                        async function lakukan() {
+                            await notifAdd('Edit Informasi Berhasil!', data.pesan, 'ok', 0, true, true);
+                            await modalReset(modalid);
+                            await modalHide(modalid);
+                            loadPageInitial(); // Reload Data User
+                        }; lakukan();
+                    }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
+                        modalFailed(modalid);
+                        notifAdd('Gagal Edit Informasi!', data.pesan, 'error', 0, true, true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    modalFailed(modalid);
+                    notifAdd('Gagal Edit Informasi!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+                }
+            });
+        }, (modalid, aksi) =>{
+            async function lakukan() {
+                // Nothing
+                if (aksi == 'download'){
+                    var dlFileTag = document.createElement("a");
+                    dlFileTag.href = '/postingan/<?= id_informasihash ?>.docx';
+                    dlFileTag.download = $("#editPostForm #input_title").val();
+                    // Buat, Klik, Hapus
+                    document.body.appendChild(dlFileTag); dlFileTag.click(); document.body.removeChild(dlFileTag);
+                }
+            }; lakukan(); 
+        });
+    </script>
+</dialog>

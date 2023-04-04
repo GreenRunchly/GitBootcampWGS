@@ -22,7 +22,7 @@ router.get('/dashboard', auth.passwebpage, auth.akun, (req, res) => {
     if (req.passwebpage){
         let {akun} = req.bridge; // Mengambil data akun
 
-        res.status(200).render('pages/dashboard.html');
+        res.redirect('/kelas');
         return;    
     }else{
         res.redirect('/portal');

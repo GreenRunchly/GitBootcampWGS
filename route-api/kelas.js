@@ -4,6 +4,7 @@ const alat = require('../module-tools');
 // const crypto = require("crypto");
 const pooldb = require('../module-db');
 const mammoth = require('mammoth');
+const logger = require('../module-logger');
 
 // Module untuk Validasi input
 const validator = require('validator');
@@ -26,29 +27,39 @@ router.get('/saya', (req, res) => {
 
     let {akun} = req.bridge; // Mengambil data akun
 
-    // Cek kelas yang diikuti oleh pengguna
-    let sqlsyn = `
-    SELECT k.*,peng.name as owner_name FROM pengguna_class_joined p 
-    JOIN kelas k ON k.id=p.id_class 
-    JOIN pengguna peng ON peng.id=k.id_owner 
-    WHERE p.id_owner= ? ORDER BY p.created ASC
-    `;
-    pooldb.query(sqlsyn, [akun.id], (err, result) => {
+    // Init SQL Query Syntax
+    let sqlsyn = ``; let sqlparams = [];
 
-        if (err){ // Cek error atau tidak
+    // Mengambil daftar kelas yang dibuat dan join
+    sqlsyn += `
+    SELECT k.*, peng.name as owner_name FROM pengguna_class_joined p 
+    /* Ambil Kelas */
+    JOIN kelas k ON k.id = p.id_class 
+    /* Ambil Identitas Pemilik Kelas */
+    JOIN pengguna peng ON peng.id = k.id_owner 
+    WHERE p.id_owner = ? ORDER BY p.updated ASC;
+    `;
+    sqlparams.push(akun.id);
+
+    // Eksekusi Query
+    pooldb.query( sqlsyn, sqlparams, (err, result) => { 
+        if (err){ // Cek ada error atau tidak
+
             res.status(200).json({
                 pesan : `Kesalahan Internal (${err})`, error : 1
             });
             return;
-        } else if (result[0]){ // Jika Berhasil ditemukan record pertama
-            // Menampilkan kelas yang join
+
+        } else { // Jika error tidak ditemukan
+            
+            // Menampilkan kelas yang sudah join
             res.status(200).json({
                 pesan : `Berhasil!`, sukses : 1,
                 hasil : result
             });
             return;
-        }
 
+        };
     });
     
 });
@@ -66,46 +77,144 @@ router.get('/:idkelas', [
     let {akun} = req.bridge; // Mengambil data akun
     let idkelas = req.params.idkelas; // Mengambil id kelas sesuai request
 
-    // Cek kelas dengan status
-    let sqlsyn = `
-    SELECT k.*,peng.name as owner_name FROM pengguna_class_joined p 
-    JOIN kelas k ON k.id=p.id_class 
-    JOIN pengguna peng ON k.id_owner=peng.id 
-    WHERE p.id_owner= ? AND p.id_class= ?
+    // Init SQL Query Syntax
+    let sqlsyn = ``; let sqlparams = [];
+
+    // Mengambil daftar kelas yang dibuat dan join
+    sqlsyn += `
+    SELECT k.*, peng.name as owner_name FROM pengguna_class_joined p 
+    /* Ambil Data Kelas */
+    JOIN kelas k ON k.id = p.id_class 
+    /* Ambil Data Identitas Pemilik Kelas */
+    JOIN pengguna peng ON peng.id = k.id_owner 
+    WHERE p.id_owner = ? AND p.id_class = ?;
     `;
-    pooldb.query( sqlsyn, [akun.id, idkelas], (err, result) => { 
-        
+    sqlparams.push(akun.id, idkelas);
+
+    // Eksekusi Query
+    pooldb.query( sqlsyn, sqlparams, (err, result) => { 
         if (err){ // Cek ada error atau tidak
+
             res.status(200).json({
                 pesan : `Kesalahan Internal (${err})`, error : 1
             });
             return;
-        }else if (result[0]){ // Jika ditemukan record pertama
 
-            let idpemilik = result[0].id_owner; // Mengetahui id pemilik kelas tersebut
+        } else { // Jika error tidak ditemukan
+            
+            if (result[0]){
+                // Menampilkan kelas yang sudah join
+                res.status(200).json({
+                    pesan : `Kelas ditemukan!`, sukses : 1,
+                    hasil : result
+                });
+                return;
+            }else{
+                // Menampilkan kelas yang sudah join
+                res.status(200).json({
+                    pesan : `Kelas yang dimaksud tidak ditemukan!`, error : 1,
+                    hasil : result
+                });
+                return;
+            }
+            
 
-            if (idpemilik == akun.id){ // Jika pengguna adalah pemilik
-                // Do something harusnya kyk hapus beberapa artibut, tapi nanti lah, blm kelar lainnya
+        };
+    });
+    
+});
+
+// Mengambil daftar peserta dalam kelas yang ditentukan
+router.get('/:idkelas/all-peserta', [
+    midval.param('idkelas').not().isEmpty().withMessage('ID Kelas tidak terdeteksi!').trim().escape()
+], (req, res) => {
+
+    // Cek Error pada validasi input
+    if ( midvalResult(req, res) ){ // Jika ditemukan masalah akan return true
+        return; // Untuk menghentikan eksekusi lanjutan
+    }
+
+    let {akun} = req.bridge; // Mengambil data akun
+    let idkelas = req.params.idkelas; // Mengambil id kelas sesuai request
+    
+    // Init SQL Query Syntax
+    let sqlsyn = ``; let sqlparams = [];
+
+    // Cek apakah kelasnya ada atau tidak
+    sqlsyn += `
+    SELECT k.* FROM kelas k
+    WHERE k.id = ? ;
+    `;
+    sqlparams.push(idkelas);
+
+    // Cek apakah peserta ada dikelas tersebut atau tidak
+    sqlsyn += `
+    SELECT peng.* FROM pengguna_class_joined p 
+    JOIN kelas k ON k.id=p.id_class 
+    JOIN pengguna peng ON peng.id=p.id_owner
+    WHERE p.id_owner = ? AND p.id_class = ? ;
+    `;
+    sqlparams.push(akun.id, idkelas);
+
+    // Cek daftar nama siswa yang join di kelas tersebut
+    sqlsyn += `
+    SELECT peng.id, peng.name FROM pengguna_class_joined p
+    JOIN pengguna peng ON peng.id = p.id_owner
+    JOIN kelas k ON k.id = p.id_class
+    WHERE p.id_class= ? ;
+    `;
+    sqlparams.push(idkelas);
+
+    // Eksekusi Query
+    pooldb.query( sqlsyn, sqlparams, (err, result) => { 
+        if (err){ // Cek ada error atau tidak
+
+            res.status(200).json({
+                pesan : `Kesalahan Internal (${err})`, error : 1
+            });
+            return;
+
+        } else {
+
+            // Cek jenis kelas
+            if ((result[0][0]) && (result[0][0].visible == 'private')){ 
+                // Cek ketersediaan peserta pada kelas
+                if ((result[1][0])){
+
+                    // Menampilkan kelas private yang sudah join
+                    res.status(200).json({
+                        pesan : `Kelas private ditemukan, anda ada dikelas, menampilkan peserta`, sukses : 1,
+                        hasil : result[2]
+                    });
+                    return;
+                    
+                }else{
+
+                    // Menampilkan pesan ditolak
+                    res.status(200).json({
+                        pesan : `Kamu tidak berada didalam kelas tersebut!`, error : 1
+                    });
+                    return;
+
+                }
+            } else if ((result[0][0]) && (result[0][0].visible == 'public')){ 
+
+                // Menampilkan kelas public yang sudah join
+                res.status(200).json({
+                    pesan : `Kelas publik ditemukan, anda ada dikelas, menampilkan peserta`, sukses : 1,
+                    hasil : result[2]
+                });
+                return;
+
             }
 
-            // Return data kelas
+            // Menampilkan kelas yang sudah join
             res.status(200).json({
-                pesan : `Berhasil! Owner`, sukses : 1,
-                hasil : result
+                pesan : `Kelas yang dimaksud tidak ditemukan!`, error : 1
             });
             return;
 
-        }else{ // Jika tidak ditemukan
-           
-            // Menampilkan kelas yang join
-            res.status(200).json({
-                pesan : `Kelas yang dimaksud tidak ditemukan`, error : 1,
-                hasil : result
-            });
-            return;
-
-        }
-
+        };
     });
     
 });

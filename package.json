@@ -29,6 +29,7 @@
     "nodemon": "^2.0.21",
     "nodestrtotime": "^1.0.0",
     "validator": "^13.9.0",
-    "wbm": "^1.1.16"
+    "wbm": "^1.1.16",
+    "winston": "^3.8.2"
   }
 }

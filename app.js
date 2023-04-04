@@ -10,14 +10,15 @@ const session = require('express-session');
 // const morgan = require('morgan');
 const auth = require('./module-auth');
 const alat = require('./module-tools');
+const logger = require('./module-logger');
 
 // Init Express App
 const app = express();
 
 // Agar saat crash web tidak shutdown
 app.on('uncaughtException', function (err) {
-    console.error(err);
-    console.log("Node Still Running...");
+    logger.error(err);
+    logger.info("Node Still Running...");
 });
 
 // Set the view engine to ejs
