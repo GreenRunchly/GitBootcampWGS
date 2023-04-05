@@ -50,10 +50,17 @@
                 $(".pageCreated").html(`${waktuFull(DataPage.created)}`);
                 $(".pageContent").html(`${Base64.decode(DataPage.content)}`);
                 $("#editPostForm #input_title").val( ($('<textarea />').html(DataPage.title).text()) );
-                switch (DataPage.type) {                    
-                    default:
-                        icon = '<i class="far fa-bookmark"></i>';
-                        break;
+                $("#editPostForm #input_topic").val( ($('<textarea />').html(DataPage.topic).text()) );
+                $("#editPostForm #input_format").val( ($('<textarea />').html(DataPage.format).text()) );
+                if (DataPage.format){
+                    switch (DataPage.format) {                    
+                        case 'evaluation':
+                            icon = '<i class="far fa-pencil"></i>';
+                            break;                 
+                        default:
+                            icon = '<i class="far fa-bookmark"></i>';
+                            break;
+                    }
                 }
                 $(".pageIcon").html(icon);
                 if (DataPage.id_owner != DataAkun.id){

@@ -15,4 +15,12 @@ tools.numberGen = function (antara=6){
     return Math.floor( parseInt('1' + digit) + ( Math.random() * parseInt('9' + digit) ) );
 }
 
+tools.base64Encode = function (input){
+    return Buffer.from( input, 'utf8').toString('base64');
+}
+
+tools.base64Decode = function (input){
+    return Buffer.from( input, 'base64').toString('utf8');
+}
+
 module.exports = tools;

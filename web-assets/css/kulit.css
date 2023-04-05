@@ -328,7 +328,8 @@ main > .content > *,
 }
 .blok-list > .item-group label{
 	position: relative;
-	margin: -0.2rem 0rem 0rem 1rem;
+	top: 4px;
+	left: 12px;
 	padding: 0rem 0.6rem 0rem 0.6rem;
 	/* background-color: #ced5e3; */
 	background-color: #e8f0fe;
@@ -535,8 +536,8 @@ main > .content > *,
 .word-content img{
 	display: block;
 	margin: 1rem;
-	margin-left: auto;
-	margin-right: auto;
+	/* margin-left: auto;
+	margin-right: auto; */
 	max-width:100%;
 }
 @media screen and (min-width: 880px) {

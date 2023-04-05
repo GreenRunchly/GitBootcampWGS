@@ -49,7 +49,7 @@ router.post('/join', [
                 } else if (result[0]){ // Jika Berhasil ditemukan record pertama
                     // Menampilkan pesan berhasil
                     res.status(200).json({
-                        pesan : `Karena anda sudah berada dikelas tersebut!`, error : 1
+                        pesan : `Bung, anda sudah berada dikelas tersebut!`, error : 1
                     });
                     return;
 

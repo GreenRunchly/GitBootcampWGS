@@ -28,6 +28,19 @@
                             <input type="text" name="room" id="input_room" placeholder="Pada ruang berapa? (10 MIPA 1 / 202)">
                         </div>
                     </div>
+                    <div class="blok-list flex">
+                        <div class="item-group">
+                            <label>Type</label>
+                            <select name="visible" id="input_visible">
+                                <option value="private">Private</option>
+                                <option value="public">Public</option>
+                            </select>
+                        </div>
+                        <div class="item-group">
+                            <label>Max Users</label>
+                            <input type="number" name="max_user" id="input_max_user" placeholder="1-100" min="1" max="100" value="10">
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>

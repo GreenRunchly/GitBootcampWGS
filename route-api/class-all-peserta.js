@@ -87,13 +87,15 @@ router.get('/:idkelas/all-peserta', [
                 });
                 return;
 
-            }
+            }else{
 
-            // Menampilkan kelas yang sudah join
-            res.status(200).json({
-                pesan : `Kelas yang dimaksud tidak ditemukan!`, error : 1
-            });
-            return;
+                // Menampilkan kelas yang sudah join
+                res.status(200).json({
+                    pesan : `Kelas yang dimaksud tidak ditemukan!`, error : 1
+                });
+                return;
+
+            }
 
         };
     });

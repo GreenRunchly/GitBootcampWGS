@@ -19,7 +19,7 @@ router.get('/:idkelas/informasi/saya', [
 
     // Cek semua data (listing) postingan pada kelas yang dimaksud
     let sqlsyn = `
-    SELECT i.id, i.id_owner, i.id_class, i.title, i.created, i.updated FROM pengguna_class_joined p 
+    SELECT i.id, i.id_owner, i.id_class, i.title, i.topic, i.format, i.created, i.updated FROM pengguna_class_joined p 
     JOIN kelas k ON k.id=p.id_class 
     JOIN informasi i ON k.id=i.id_class 
     WHERE p.id_owner= ? AND p.id_class= ?

@@ -57,7 +57,7 @@
                 $(".pageClassName").html(`${DataPage.class_name}`);
                 $(".pageClassDesc").html(`${DataPage.class_desc}`);
                 $(".pageClassSubject").html(`${DataPage.subject}`);
-                $(".pageClassRoom").html(`${DataPage.room}`);
+                $(".pageClassRoom").html(`${DataPage.room}`);               
                 if (DataPage.id_owner != DataAkun.id){
                     $(".menuButtonCodeClass").remove();
                     $(".menuButtonPreferences").remove();
@@ -66,12 +66,19 @@
                     $("#konfirmasiQuit .main .title h1").html('Menghapus kelas?');
                     $(".menuButtonQuitClass .text span").html('Terminate Class');
                     $(".menuButtonQuitClass .icon").html('<i class="fas fa-bomb"></i>');
+
+                    // Menampilkan kode invite
+                    if (DataPage.invite_code){
+                        $(".pageInviteCode").val(`${DataPage.invite_code}`);
+                    }
                 }
                 // Isi Edit Kelas
                 $("#editForm #input_name").val( ($('<textarea />').html(DataPage.class_name).text()) );
                 $("#editForm #input_desc").val( ($('<textarea />').html(DataPage.class_desc).text()) );
                 $("#editForm #input_subject").val( ($('<textarea />').html(DataPage.subject).text()) );
                 $("#editForm #input_room").val( ($('<textarea />').html(DataPage.room).text()) );
+                $("#editForm #input_visible").val( ($('<textarea />').html(DataPage.visible).text()) );
+                $("#editForm #input_max_user").val( ($('<textarea />').html(DataPage.max_user).text()) );
             }else{
                 notifAdd('Access Failed', `Uknown Issue`, 'error', 0, true, true);
                 window.location = '/kelas';
@@ -105,13 +112,17 @@
                 $(`.postListing .list-item`).not(':last').remove();
                 dataArray.forEach(element => {
                     let icon = '<i class="far fa-bookmark"></i>';
-                    if (element.type){
-                        switch (element.type) {                    
+                    if (element.format){
+                        switch (element.format) {   
+                            case 'evaluation':
+                                icon = '<i class="far fa-pencil"></i>';
+                                break;                 
                             default:
                                 icon = '<i class="far fa-bookmark"></i>';
                                 break;
                         }
                     }
+                    console.log(element.format);
                     // Strukcture
                     let html = `
                         <a class="banner hoverable small list-item" href="/kelas/<?= idkelas ?>/informasi/${element.id}">

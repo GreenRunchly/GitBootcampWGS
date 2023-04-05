@@ -11,6 +11,8 @@ router.post('/:idkelas/edit',[
     modval.midval.body('name').isLength({ min: 5, max: 30 }).withMessage('Karakter Nama harus minimal 5 dan maksimal 30!').trim().escape(),
     modval.midval.body('subject').isLength({ min: 1 }).withMessage('Subject tidak boleh kosong!').trim().escape(),
     modval.midval.body('room').isLength({ min: 1 }).withMessage('Ruangan tidak boleh kosong!').trim().escape(),
+    modval.midval.body('visible').not().isEmpty().withMessage('Tipe kelas tidak boleh kosong!').trim().escape(),
+    modval.midval.body('max_user').not().isEmpty().withMessage('Penentu maksimal peserta tidak boleh kosong!').trim().escape()
 ], (req, res) => {
 
     // Cek Error pada validasi input
@@ -19,8 +21,37 @@ router.post('/:idkelas/edit',[
     }
 
     let {akun} = req.bridge; // Mengambil data akun
-    let {name, desc, subject, room} = req.body; // Mengambil data kelas
-    let {idkelas} = req.params; // Parameter kelas   
+    let {name, desc, subject, room, visible, max_user} = req.body; // Mengambil kode kelas
+    let {idkelas} = req.params; // Parameter kelas  
+    
+    // Batas Max User
+    if (modval.validator.isInt(max_user)){
+        if ((max_user < 1) || (max_user > 100)) {
+            // Jika kurang dari 1 atau lebih dari 100
+            res.status(200).json({
+                pesan : `Max User tidak valid!`, error : 1
+            });
+            return;
+        }
+    }else{
+        // Jika berisi huruf bukannya angka
+        res.status(200).json({
+            pesan : `Max User hanya bisa berisi angka antara 1-100!`, error : 1
+        });
+        return;
+    }
+
+    // Cek validasi tipe visible kelas
+    if (modval.validator.isAlpha(visible)){
+        console.log(visible);
+        if ((visible == 'public') || (visible == 'private')){}else{
+            // Jika berisi selain public dan private
+            res.status(200).json({
+                pesan : `Isi tipe kelas invalid`, error : 1
+            });
+            return; 
+        }
+    }
 
     // Cek Ada di kelas tersebut atau tidak
     let sqlsyn = `
@@ -47,10 +78,10 @@ router.post('/:idkelas/edit',[
             }
             // Remove record from db
             let sqlsyn = `
-            UPDATE kelas SET class_name= ? ,class_desc= ? ,subject= ? ,room= ? 
+            UPDATE kelas SET class_name= ? ,class_desc= ? ,subject= ? ,room= ? ,visible= ? ,max_user= ? 
             WHERE id= ?
             `;
-            pooldb.query( sqlsyn, [name, desc, subject, room, idkelas], (err, result) => { 
+            pooldb.query( sqlsyn, [name, desc, subject, room, visible, max_user, idkelas], (err, result) => { 
                 
                 if (err){ // Jika Error Syntax atau semacamnya
                     res.status(200).json({
