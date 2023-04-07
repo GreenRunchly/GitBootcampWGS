@@ -10,12 +10,13 @@ const tools = require('../module-tools');
 
 // Module JQuery dengan JSDOM
 const { JSDOM } = require( "jsdom" );
+const { map } = require('jquery');
 const { window } = new JSDOM( "<body></body>" );
 const $ = require( "jquery" )( window );
 
-async function convertSoal(rawSoal) {
+async function convertSoal(res, req, rawSoal) {
 
-    // Functions Pendukung
+    // Functions Pendukung 
     function tabletodiv(table){
 
 		table.each(function(index, el) {
@@ -46,43 +47,74 @@ async function convertSoal(rawSoal) {
     $("body").html(rawSoal); // Init HTML Soal
     $("body").html(`<table>${$('body>table').html()}</table>`); // Menghapus table luar tag
     tabletodiv($('body>table'));
+    
+    // Konfigurasi Soal
+    let config = {};
+    let config_want = [
+        {waktu:'int',},
+        {kkm:'int'},
+        {dikerjakan:'int'},
+        {tipe:'str'}
+    ];
+    // Paparkan Config
+    config_want.forEach( (value, index) => {
+        // Paparkan secara one by one config want
+        Object.entries(value).map( ([key, val]) => {
+            let raw = getCellData('div.ex-tr','.ex-td', 1, index, 0);
+            if (raw !== undefined){
+                // Mengambil string diantara string dengan tag <strong> pada HTML
+                config[key] = raw.substring(
+                    raw.indexOf("<strong>") + 8, 
+                    raw.lastIndexOf("</strong>")
+                );
+                // Jika value yang diinginkan integer
+                if (val == 'int'){
+                    config[key] = parseInt(config[key]);
+                }
+            }
+        });
+    });
+    $('div.ex-tr').eq(0).remove(); // Hapus Header Konfigurasi Soal
+    //console.log(config);
 
     // HTML jadi Soal Object
-    let jumlahsoal = Math.round($('div.ex-tr').length / 7);
+    let jumlahsoal = Math.round(($('div.ex-tr').length) / 7);
     let soal = [];
-    for (let index = 0; index < jumlahsoal; index++) {
-        
-        soal[index] = {};
-        soal[index].nomor = index+1;
-        soal[index].pertanyaan = tools.base64Encode(getCellData('div.ex-tr', '.ex-td', index+1, 1, 0));
-        soal[index].pembahasan = tools.base64Encode(getCellData('div.ex-tr', '.ex-td', index+1, 2, 1));
-        soal[index].jenis = getCellData('div.ex-tr', '.ex-td', index+1, 0, 1).replace('<p>','').replace('</p>','').replace('<strong>','').replace('</strong>','');
-        soal[index].poin = parseInt(getCellData('div.ex-tr', '.ex-td', index+1, 0, 2).replace('<p>','').replace('</p>','').replace('<strong>','').replace('</strong>',''));
+    if (Object.keys(config).length == 4){ // Jika Config Header ada 
+        for (let index = 0; index < jumlahsoal; index++) {
+            
+            // Mengambil Soal
+            soal[index] = {};
+            soal[index].nomor = index+1;
+            soal[index].pertanyaan = tools.base64Encode(getCellData('div.ex-tr', '.ex-td', index+1, 1, 0));
+            soal[index].pembahasan = tools.base64Encode(getCellData('div.ex-tr', '.ex-td', index+1, 1, 1));
+            soal[index].jenis = getCellData('div.ex-tr', '.ex-td', index+1, 0, 1).replace('<p>','').replace('</p>','').replace('<strong>','').replace('</strong>','');
+            soal[index].poin = parseInt(getCellData('div.ex-tr', '.ex-td', index+1, 0, 2).replace('<p>','').replace('</p>','').replace('<strong>','').replace('</strong>',''));
 
-        soal[index].pilihan = {};
-        for (let i = 0; i < 5; i++) {
-            switch (soal[index].jenis) {
-                case 'ESSAY':
-                    soal[index].pilihan[i] = getCellData('div.ex-tr', '.ex-td', index+1, 2, (2 + i)).replace('<p>','').replace('</p>','');
-                    break;
-                default:
+            // Mengambil Opsi
+            soal[index].pilihan = {};
+            for (let i = 0; i < 5; i++) {
+                if (soal[index].jenis == 'ESSAY'){
+                    soal[index].pilihan[i] = tools.base64Encode( getCellData('div.ex-tr', '.ex-td', index+1, 2, (2 + i)).replace('<p>','').replace('</p>','') );
+                }else{
                     soal[index].pilihan[i] = tools.base64Encode( getCellData('div.ex-tr', '.ex-td', index+1, 2, (2 + i)) );
-                    break;
+                }
             }
+            // Mengambil Jawaban
+            soal[index].jawaban = [];
+            for (let i = 0; i < 5; i++) {
+                let jawaban = getCellData('div.ex-tr', '.ex-td', index+1, 1, (2 + i)).replace('<p>','').replace('</p>','');
+                if (!jawaban.indexOf('<strong>')){
+                    soal[index].jawaban.push(i);
+                };
+            }
+            
         }
-        soal[index].jawaban = [];
-        for (let i = 0; i < 5; i++) {
-            let jawaban = getCellData('div.ex-tr', '.ex-td', index+1, 1, (2 + i)).replace('<p>','').replace('</p>','');
-            if (!jawaban.indexOf('<strong>')){
-                soal[index].jawaban.push(i);
-            };
-        }
-        
     }
     
-    console.log(soal);
-    //return ($("body").html());
-    return JSON.stringify(soal);
+    //console.log({soal,config});
+    // return ($("body").html());
+    return ({soal,config});
 
 }
 
@@ -179,13 +211,27 @@ router.post('/:idkelas/informasi/do', [
                             // Cek Tipe file, jika MS Word, maka lanjut!
                             if (filekonten.mimetype == `application/vnd.openxmlformats-officedocument.wordprocessingml.document`){
                                 // Konversikan MS Word ke HTML dengan mammoth
-                                mammoth.convertToHtml({buffer:filekonten.data}).then(function(result){
+                                mammoth.convertToHtml({buffer:filekonten.data}).then(function(result_){
                                     
-                                    let input_content = result.value; // HTML Output
-                                    convertSoal(input_content).then((jsondata) => {
-                                        input_content = jsondata;
-                                        lanjut();
-                                    });
+                                    let input_content = result_.value; // HTML Output
+
+                                    // Mengubah konten menjadi evaluasi jika benar
+                                    if ((input_content) && (modval.validator.escape(format) == 'evaluation')){
+                                        convertSoal(res, req, input_content).then((jsondata) => {
+                                            input_content = JSON.stringify(jsondata.soal);
+                                            //console.log(input_content);
+                                            if (input_content !== '[]'){
+                                                lanjut();
+                                            }else{
+                                                res.status(200).json({
+                                                    pesan : `Hmm.. Sepertinya konten yang diupload tidak sesuai formatnya, harap cek file yang diupload!`, error : 1
+                                                });
+                                                return;
+                                            }
+                                        });
+                                    }else{
+                                        lanjut(); console.log('here');
+                                    }
 
                                     function lanjut() {
                                         // Melakukan Update Postingan
@@ -229,6 +275,22 @@ router.post('/:idkelas/informasi/do', [
                             }
                         
                         }else{
+                            
+                            // Jika postingan terlanjur sebuah evaluasi, maka menolak perubahan material
+                            if ((result[0].format == 'evaluation') && (modval.validator.escape(format) == 'material') && (modval.validator.isJSON(result[0].content))){
+                                res.status(200).json({
+                                    pesan : `Tidak dapat mengubah format karena konten tidak sesuai!`, error : 1
+                                });
+                                return;
+                            }
+
+                            // Jika postingan terlanjur sebuah material, maka menolak perubahan ke evaluasi
+                            if ((result[0].format == 'material') && (modval.validator.escape(format) == 'evaluation') && (modval.validator.isJSON(result[0].content) == false)){
+                                res.status(200).json({
+                                    pesan : `Tidak dapat mengubah format ke Evaluasi karena konten sebelumnya tidak sesuai!`, error : 1
+                                });
+                                return;
+                            }
 
                             // Melakukan Update Postingan
                             let sqlsyn = `
@@ -277,39 +339,58 @@ router.post('/:idkelas/informasi/do', [
                     // Cek Tipe file, jika MS Word, maka lanjut!
                     if (filekonten.mimetype == `application/vnd.openxmlformats-officedocument.wordprocessingml.document`){
                         // Konversikan MS Word ke HTML dengan mammoth
-                        mammoth.convertToHtml({buffer:filekonten.data}).then(function(result){
-                            
-                            let input_content = result.value; // HTML Output
+                        mammoth.convertToHtml({buffer:filekonten.data}).then(function(result_){
 
-                            // Menambahkan Postingan 
-                            let sqlsyn = `
-                            INSERT INTO informasi (id_owner, id_class, title, topic, format, content) 
-                            VALUES ( ?, ?, ?, ?, ?, ? )
-                            `;
-                            pooldb.query( sqlsyn, [akun.id, idkelas, modval.validator.escape(title), modval.validator.escape(topic), modval.validator.escape(format), input_content], (err, result) => { 
-                            
-                                if (err){ // Cek ada error atau tidak
-                                    res.status(200).json({
-                                        pesan : `Kesalahan Internal (${err})`, error : 1
-                                    });
-                                    return;
-                                } else {
-
-                                    // Membuat hash file konten agar bisa dikenali / daur ulang file
-                                    let idinformasihash = md5(parseInt(result.insertId)+'postingan');
-
-                                    // Menyalin data agar bisa dipakai lagi (dipindah)
-                                    filekonten.mv('./uploads/postingan/' + (idinformasihash) + '.docx');
-
-                                    // Menampilkan Pesan berhasil
-                                    res.status(200).json({
-                                        pesan : `Berhasil nambahkan postingan!`, sukses : 1
-                                    });
-                                    return;
+                            let input_content = result_.value; // HTML Output
                                     
-                                }
+                            if ((input_content) && (modval.validator.escape(format) == 'evaluation')){
+                                convertSoal(res, req, input_content).then((jsondata) => {
+                                    input_content = JSON.stringify(jsondata.soal);
+                                    //console.log(input_content);
+                                    if (input_content !== '[]'){
+                                        lanjut();
+                                    }else{
+                                        res.status(200).json({
+                                            pesan : `Hmm.. Sepertinya konten yang diupload tidak sesuai formatnya, harap cek file yang diupload!`, error : 1
+                                        });
+                                        return;
+                                    }
+                                });
+                            }else{
+                                lanjut();
+                            }
+
+                            function lanjut() {
+                                // Menambahkan Postingan 
+                                let sqlsyn = `
+                                INSERT INTO informasi (id_owner, id_class, title, topic, format, content) 
+                                VALUES ( ?, ?, ?, ?, ?, ? )
+                                `;
+                                pooldb.query( sqlsyn, [akun.id, idkelas, modval.validator.escape(title), modval.validator.escape(topic), modval.validator.escape(format), input_content], (err, result) => { 
                                 
-                            });
+                                    if (err){ // Cek ada error atau tidak
+                                        res.status(200).json({
+                                            pesan : `Kesalahan Internal (${err})`, error : 1
+                                        });
+                                        return;
+                                    } else {
+
+                                        // Membuat hash file konten agar bisa dikenali / daur ulang file
+                                        let idinformasihash = md5(parseInt(result.insertId)+'postingan');
+
+                                        // Menyalin data agar bisa dipakai lagi (dipindah)
+                                        filekonten.mv('./uploads/postingan/' + (idinformasihash) + '.docx');
+
+                                        // Menampilkan Pesan berhasil
+                                        res.status(200).json({
+                                            pesan : `Berhasil nambahkan postingan!`, sukses : 1
+                                        });
+                                        return;
+                                        
+                                    }
+                                    
+                                });
+                            }
                             
                         })
                     } else { // File tidak didukung karena hanya bisa menggunakan MS Word

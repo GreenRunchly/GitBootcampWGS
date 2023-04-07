@@ -1,4 +1,4 @@
-<dialog id="editPost">
+<dialog id="editPost" class="wide-med">
     <div class="panel-back aksiModal" value="close"></div>
     <div class="content">
         <div class="main">
@@ -44,11 +44,11 @@
             <div class="blok-list flex">
                 <button class="button aksiModal" value="download">
                     <div class="icon"><i class="far fa-undo"></i></div>
-                    <div class="text"><span>Get File</span></div>
+                    <div class="text"><span>Get Old File</span></div>
                 </button>
-                <button class="button aksiModal" value="download-template">
+                <button class="button aksiModal buttonEvaluationTemplate" value="download-template">
                     <div class="icon"><i class="far fa-file-word"></i></div>
-                    <div class="text"><span>Template</span></div>
+                    <div class="text"><span>Get File Template</span></div>
                 </button>
             </div>
             <div class="blok-list flex">
@@ -105,6 +105,7 @@
                     dlFileTag.download = $("#editPostForm #input_title").val();
                     // Buat, Klik, Hapus
                     document.body.appendChild(dlFileTag); dlFileTag.click(); document.body.removeChild(dlFileTag);
+                    window.location.reload();
                 }
             }; lakukan(); 
         });

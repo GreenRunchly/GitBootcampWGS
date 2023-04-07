@@ -268,7 +268,10 @@
                 `);
             }
         });
-
+        $(document).on('click', `#button-submit-absen`, function() {
+            console.log('Okee');
+        });
+        
         // Agar formulir tidak teraksekusi saat tekan enter
         $(window).keydown(function(event){
             if(event.keyCode == 13) {

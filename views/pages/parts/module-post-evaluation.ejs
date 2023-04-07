@@ -1,0 +1,74 @@
+<script>
+    var evaluationData = {};
+    function loadEvaluationEditor(){
+        evaluationData = JSON.parse(Base64.decode(DataPage.content)); console.log(evaluationData);
+        evaluationData.forEach(element => {
+            // Buat Badan Soal
+            $(`.pageSoal`).append(`<div class="pertanyaan pertanyaan-no-${element.nomor}"></div>`);
+            // Buat Badan Pertanyaan
+            $(`.pageSoal .pertanyaan-no-${element.nomor}`).append(`<div class="pertanyaan-soal"></div>`);
+            // Buat Badan Opsi Pertanyaan
+            $(`.pageSoal .pertanyaan-no-${element.nomor}`).append(`<div class="pertanyaan-opsi"></div>`);
+            // Tambahkan Konten Pertanyaan
+            $(`.pageSoal .pertanyaan-no-${element.nomor} .pertanyaan-soal`).append(`<h3>Soal No. ${element.nomor}</h3>`);
+            $(`.pageSoal .pertanyaan-no-${element.nomor} .pertanyaan-soal`).append(Base64.decode(element.pertanyaan));
+            if (element.pembahasan){
+                // Buat Badan Pertanyaan
+                $(`.pageSoal .pertanyaan-no-${element.nomor}`).append(`<div class="pertanyaan-pembahasan"></div>`);
+                // Tambahkan Konten Pertanyaan
+                $(`.pageSoal .pertanyaan-no-${element.nomor} .pertanyaan-pembahasan`).append(Base64.decode(element.pembahasan));
+            }            
+            
+            let alpPattern = ['A','B','C','D','E']; // Default Pilihan Ganda PG
+            switch (element.jenis) {
+                case 'ESSAY':
+                    alpPattern = ['<i class="fas fa-pencil"></i>'];
+                    break;
+                case 'BS':
+                    alpPattern = ['<i class="fas fa-check"></i>', '<i class="fas fa-times"></i>'];
+                    break;
+                case 'COMPLEX':
+                    alpPattern = [
+                        '<i class="fas fa-chevron-right"></i>',
+                        '<i class="fas fa-chevron-right"></i>',
+                        '<i class="fas fa-chevron-right"></i>',
+                        '<i class="fas fa-chevron-right"></i>',
+                        '<i class="fas fa-chevron-right"></i>'
+                    ];
+                    break;
+            }
+            // Menampilkan Opsi berdasarkan jenis
+            for (let i = 0; i < Object.keys(element.pilihan).length; i++) {
+                // Fetch Badan Opsi
+                if (element.jenis == 'ESSAY'){
+                    $(`.pageSoal .pertanyaan-no-${element.nomor} .pertanyaan-opsi`).append(`
+                        <div class="blok-list">    
+                            <div class="opsi opsi-${i}">
+                                <input type="text" placeholder="Masukan Jawaban..." readonly>    
+                            </div>
+                        </div>
+                    `);
+                }else{
+                    $(`.pageSoal .pertanyaan-no-${element.nomor} .pertanyaan-opsi`).append(`<div class="opsi opsi-${i}"><span></span><span></span></div>`);
+                    let opsi = '?';
+                    try {
+                        opsi = Base64.decode(element.pilihan[i]);
+                    } catch(e) {
+                        opsi = element.pilihan[i];
+                    }
+                    // Fetch Opsi
+                    $(`.pageSoal .pertanyaan-no-${element.nomor} .pertanyaan-opsi .opsi-${i} span`).eq(0).append(alpPattern[i]);
+                    $(`.pageSoal .pertanyaan-no-${element.nomor} .pertanyaan-opsi .opsi-${i} span`).eq(1).append(opsi);
+                }
+            }
+            // Fetch Jawaban
+            element.jawaban.forEach( (value, index) => {
+                $(`.pageSoal .pertanyaan-no-${element.nomor} .pertanyaan-opsi .opsi-${index}`).addClass(`correct`);
+                if (element.jenis == 'ESSAY'){
+                    $(`.pageSoal .pertanyaan-no-${element.nomor} .pertanyaan-opsi .opsi-${index} input`).val(Base64.decode(element.pilihan[value]));
+                }
+            });
+            $('.pageSoal .pertanyaan').addClass('aktif');// Mengaktifkan soal pertama
+        });
+    }
+</script>

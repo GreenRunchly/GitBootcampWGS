@@ -81,8 +81,12 @@ router.get('/:idkelas/informasi/:idinformasi', [
 
                                 // Encode Konten dan Hapus HTML Entities pada title
                                 result_[0].title = modval.validator.unescape(result_[0].title);
-                                result_[0].content = tools.base64Encode(result_[0].content)
-
+                                if (akun.id === result_[0].id_owner){
+                                    result_[0].content = tools.base64Encode(result_[0].content);
+                                }else{
+                                    result_[0].content = 'Start the Evaluation!';
+                                }
+                                
                                 // Menampilkan data postingan
                                 res.status(200).json({
                                     pesan : `Kelas private ditemukan, anda ada dikelas, menampilkan informasi`, sukses : 1,
@@ -140,7 +144,11 @@ router.get('/:idkelas/informasi/:idinformasi', [
 
                             // Encode Konten dan Hapus HTML Entities pada title
                             result_[0].title = modval.validator.unescape(result_[0].title);
-                            result_[0].content = tools.base64Encode(result_[0].content);
+                            if (akun.id === result_[0].id_owner){
+                                result_[0].content = tools.base64Encode(result_[0].content);
+                            }else{
+                                result_[0].content = 'Start the Evaluation!';
+                            }
 
                             // Menampilkan data postingan
                             res.status(200).json({
