@@ -84,7 +84,13 @@ router.get('/:idkelas/informasi/:idinformasi', [
                                 if (akun.id === result_[0].id_owner){
                                     result_[0].content = tools.base64Encode(result_[0].content);
                                 }else{
-                                    result_[0].content = 'Start the Evaluation!';
+                                    if (result_[0].format == 'evaluation'){
+                                        let konten = JSON.parse(result_[0].content); // Ubah string jadi object
+                                        delete konten.soal; // Hapus konten soal
+                                        result_[0].content = tools.base64Encode(JSON.stringify(konten));
+                                    }else{
+                                        result_[0].content = tools.base64Encode(result_[0].content);
+                                    }                                   
                                 }
                                 
                                 // Menampilkan data postingan
@@ -147,7 +153,7 @@ router.get('/:idkelas/informasi/:idinformasi', [
                             if (akun.id === result_[0].id_owner){
                                 result_[0].content = tools.base64Encode(result_[0].content);
                             }else{
-                                result_[0].content = 'Start the Evaluation!';
+                                result_[0].content = tools.base64Encode('[]');
                             }
 
                             // Menampilkan data postingan

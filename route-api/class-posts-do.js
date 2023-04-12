@@ -218,9 +218,13 @@ router.post('/:idkelas/informasi/do', [
                                     // Mengubah konten menjadi evaluasi jika benar
                                     if ((input_content) && (modval.validator.escape(format) == 'evaluation')){
                                         convertSoal(res, req, input_content).then((jsondata) => {
-                                            input_content = JSON.stringify(jsondata.soal);
-                                            //console.log(input_content);
-                                            if (input_content !== '[]'){
+                                            
+                                            if (jsondata.config.dikerjakan == 0){
+                                                jsondata.config.dikerjakan = jsondata.soal.length; // Set jumlah soal yang akan dikerjakan secara default
+                                            }
+                                            input_content = JSON.stringify(jsondata);
+                                            //console.log(jsondata.soal);
+                                            if (jsondata.soal.length !== 0){
                                                 lanjut();
                                             }else{
                                                 res.status(200).json({
@@ -345,9 +349,11 @@ router.post('/:idkelas/informasi/do', [
                                     
                             if ((input_content) && (modval.validator.escape(format) == 'evaluation')){
                                 convertSoal(res, req, input_content).then((jsondata) => {
-                                    input_content = JSON.stringify(jsondata.soal);
-                                    //console.log(input_content);
-                                    if (input_content !== '[]'){
+                                    if (jsondata.config.dikerjakan == 0){
+                                        jsondata.config.dikerjakan = jsondata.soal.length; // Set jumlah soal yang akan dikerjakan secara default
+                                    }
+                                    input_content = JSON.stringify(jsondata);
+                                    if (jsondata.soal.length !== 0){
                                         lanjut();
                                     }else{
                                         res.status(200).json({

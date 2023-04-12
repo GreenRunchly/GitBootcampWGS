@@ -360,6 +360,9 @@ main > .content > *,
 	display: flex;
 	gap: 0.4rem;
 }
+.blok-list.flex.center{
+	justify-content: center;
+}
 .blok-list.tiles{
 	display: flex;
 	gap: 0.4rem;
@@ -371,6 +374,10 @@ main > .content > *,
 }
 .blok-list.tiles-s2 > .list-item{
 	width: 49%;
+}
+.blok-list.tiles > .list-item.center{
+	justify-content: center;
+	text-align: center;
 }
 .blok-list > .button{
 	font: unset;
@@ -396,6 +403,10 @@ main > .content > *,
 	justify-content: center;
 	align-items: center;
 	width: 4rem;
+}
+.blok-list > .button.center > .icon{
+	justify-content: flex-start;
+	width: 3rem;
 }
 .blok-list > .button > .icon i{
 	display: inline;
@@ -438,12 +449,14 @@ main > .content > *,
 	display: flex;
 	justify-content: flex-start;
 	align-items: flex-end;
+	flex-wrap: wrap;
 	background-position: center;
 	background-size: cover;
 	background-image: url('../img/banner.jpg');
 	min-height: 200px;
 	border-radius: 1rem;
 	overflow: hidden;
+	gap: 1rem;
 }
 .banner.small{
 	min-height: 10px;
@@ -505,6 +518,10 @@ main > .content > *,
 .banner > .title .userAkunEmail{
 	display: block;
 	max-width: 140px;
+}
+.banner > .blok-list{
+	width: auto;
+	flex-grow: 1;
 }
 /* Other */
 @keyframes spinning {
