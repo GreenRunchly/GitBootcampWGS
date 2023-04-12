@@ -39,10 +39,10 @@ router.get('/:idkelas/all-peserta', [
 
     // Cek daftar nama siswa yang join di kelas tersebut
     sqlsyn += `
-    SELECT peng.id, peng.name FROM pengguna_class_joined p
+    SELECT peng.id, peng.name, p.updated FROM pengguna_class_joined p
     JOIN pengguna peng ON peng.id = p.id_owner
     JOIN kelas k ON k.id = p.id_class
-    WHERE p.id_class= ? ;
+    WHERE p.id_class= ? ORDER BY p.updated DESC;
     `;
     sqlparams.push(idkelas);
 
@@ -65,7 +65,9 @@ router.get('/:idkelas/all-peserta', [
                     // Menampilkan kelas private yang sudah join
                     res.status(200).json({
                         pesan : `Kelas private ditemukan, anda ada dikelas, menampilkan peserta`, sukses : 1,
-                        hasil : result[2]
+                        hasil : result[2],
+                        max_user : result[0][0].max_user,
+                        current_user : result[2].length
                     });
                     return;
                     
@@ -83,7 +85,9 @@ router.get('/:idkelas/all-peserta', [
                 // Menampilkan kelas public yang sudah join
                 res.status(200).json({
                     pesan : `Kelas publik ditemukan, anda ada dikelas, menampilkan peserta`, sukses : 1,
-                    hasil : result[2]
+                    hasil : result[2],
+                    max_user : result[0][0].max_user,
+                    current_user : result[2].length
                 });
                 return;
 

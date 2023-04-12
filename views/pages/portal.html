@@ -12,8 +12,18 @@
 <form id="loginForm" action="/api/akun/masuk" method="post" autocomplete="off">
     <div class="blok-list">
         <div class="blok-list flex">
-            <input type="text" name="username"  id="input_username" placeholder="Username">
-            <input type="password" name="password" id="input_password" placeholder="Password">
+            <div class="blok-list flex">
+                <div class="item-group">
+                    <label>Username</label>
+                    <input type="text" name="username"  id="input_username" placeholder="Type username here..">
+                </div>
+            </div>
+            <div class="blok-list flex">
+                <div class="item-group">
+                    <label>Username</label>
+                    <input type="password" name="password" id="input_password" placeholder="Type password here..">
+                </div>
+            </div>
         </div>
         <button class="button active" type="submit" value="batal">
             <div class="icon"><i class="far fa-check"></i></div>

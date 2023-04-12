@@ -48,7 +48,7 @@
                 </button>
                 <button class="button aksiModal buttonEvaluationTemplate" value="download-template">
                     <div class="icon"><i class="far fa-file-word"></i></div>
-                    <div class="text"><span>Get File Template</span></div>
+                    <div class="text"><span>Get Template</span></div>
                 </button>
             </div>
             <div class="blok-list flex">
@@ -98,7 +98,7 @@
             });
         }, (modalid, aksi) =>{
             async function lakukan() {
-                // Nothing
+                // Download Old File
                 if (aksi == 'download'){
                     var dlFileTag = document.createElement("a");
                     dlFileTag.href = '/postingan/<?= id_informasihash ?>.docx';
@@ -107,7 +107,28 @@
                     document.body.appendChild(dlFileTag); dlFileTag.click(); document.body.removeChild(dlFileTag);
                     window.location.reload();
                 }
+                // Download Template
+                if (aksi == 'download-template'){
+                    var dlFileTag = document.createElement("a");
+                    dlFileTag.href = '/template/template-evaluasi.docx';
+                    dlFileTag.download = $("#editPostForm #input_title").val();
+                    // Buat, Klik, Hapus
+                    document.body.appendChild(dlFileTag); dlFileTag.click(); document.body.removeChild(dlFileTag);
+                    window.location.reload();
+                }
             }; lakukan(); 
         });
+        // Cek format untuk sesuaikan file template
+        setInterval(() => {
+            switch ($('#input_format').val()) {
+                case 'evaluation':
+                    $('.buttonEvaluationTemplate').show();
+                    break;
+            
+                default:
+                    $('.buttonEvaluationTemplate').hide();
+                    break;
+            };
+        }, 1000);
     </script>
 </dialog>

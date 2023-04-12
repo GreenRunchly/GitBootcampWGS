@@ -73,6 +73,7 @@ app.use("/assets", express.static('web-assets'));
 
 // Static Files untuk style dan lainnya
 app.use("/postingan", express.static('uploads/postingan'));
+app.use("/template", express.static('uploads/template'));
 
 
 /* Router API */

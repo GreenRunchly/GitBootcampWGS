@@ -7,10 +7,29 @@
         <h2><i class="far fa-chalkboard-teacher"></i><span class="pageClassName"></span></h2>
         <h3><span class="pageClassRoom"></span> - <span class="pageClassSubject"></span></h3>
         <p><span class="pageClassDesc"></span></p>
+        <p>Hosted by <span><b class="pageClassOwnerName">...</b></span></p>
     </div>
 </header>
-
-<br><h2>Postingan Terbaru</h2>
+<div class="blok-list flex tiles tiles-s2">
+    <a class="banner hoverable small list-item menuButtonParticipant" onclick="modalShow('classParticipantShow');">
+        <div class="title">
+            <h2><i class="fas fa-users"></i>Participants</h2>
+            <p>There's <span class="pageParticipantCurrent">...</span> of <span class="pageParticipantMax">...</span> participants joined.</p>
+        </div>
+    </a>
+    <a class="banner hoverable small list-item menuButtonPreferences" onclick="modalShow('editKelas');">
+        <div class="title">
+            <h2><i class="fas fa-cog"></i>Preferences</h2>
+            <p>Change the way this class flow!</p>
+        </div>
+    </a>
+</div>
+<div class="blok-list flex">
+    <div class="item-group">
+        <label><b style="font-size: 1.3rem;">Latest Posts</b></label>
+        <input type="text" class="searchInput" area="postListing" placeholder="Type here to search...">
+    </div>
+</div>
 <div class="blok-list postListing">
     <a class="banner hoverable small list-item ghost" onclick="modalShow('addPost');">
         <div class="title">
@@ -24,7 +43,7 @@
 <!-- Account Handler -->
 <?- include('./parts/module-akun'); ?>
 <script>
-    var DataPage = {}; var DataPageInformasi = {};
+    var DataPage = {}; var DataPageInformasi = {}; var DataPageParticipant = {};
     function loadPageInitial() {
         $(".userAkunName").html(`${DataAkun.name}`);
         
@@ -57,11 +76,16 @@
                 $(".pageClassName").html(`${DataPage.class_name}`);
                 $(".pageClassDesc").html(`${DataPage.class_desc}`);
                 $(".pageClassSubject").html(`${DataPage.subject}`);
-                $(".pageClassRoom").html(`${DataPage.room}`);               
+                $(".pageClassRoom").html(`${DataPage.room}`); 
+                $(".pageClassOwnerName").html(`${DataPage.class_owner_name}`); 
+                
+                      
                 if (DataPage.id_owner != DataAkun.id){
                     $(".menuButtonCodeClass").remove();
                     $(".menuButtonPreferences").remove();
                     $(".menuButtonPublishPost").remove();
+                    // Hapus Add Post modal
+                    $('#addPost').remove();
                 }else{
                     $("#konfirmasiQuit .main .title h1").html('Menghapus kelas?');
                     $(".menuButtonQuitClass .text span").html('Terminate Class');
@@ -123,9 +147,10 @@
                         }
                     }
                     console.log(element.format);
+                    let searchAs = (element.title).toUpperCase();
                     // Strukcture
                     let html = `
-                        <a class="banner hoverable small list-item" href="/kelas/<?= idkelas ?>/informasi/${element.id}">
+                        <a class="banner hoverable small list-item searchItem" search-as="${searchAs}" href="/kelas/<?= idkelas ?>/informasi/${element.id}">
                             <div class="title">
                                 <h3>${icon}${element.title}</h3>
                                 <p><span>${waktuFull(element.created)}</span></p>
@@ -136,8 +161,55 @@
                 });
             };
         }; 
+
+        // Load Data Informasi
+        $.ajax({
+            type: "GET",
+            url: '/api/kelas/<?= idkelas ?>/all-peserta',
+            cache: false,
+            success: function(data) {
+                if (data.sukses) {
+                    DataPageParticipant = data;
+                    loadPageParticipant();
+                    console.log(data.hasil);
+                }else{
+                    if (data.logout){
+                        window.location.reload(); return;
+                    }
+                    notifAdd('Gagal Mengambil Data (Participant)!', data.pesan, 'error', 0, false, true);
+                };
+            },
+            error: function(xhr, status, error) {
+                notifAdd('Gagal Mengambil Data (Participant)!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+            }
+        });
+        async function loadPageParticipant() {
+            if (DataPageParticipant){
+                $(".pageParticipantCurrent").html(DataPageParticipant.current_user);
+                $(".pageParticipantMax").html(DataPageParticipant.max_user);   
+                
+                
+                let dataArray = DataPageParticipant.hasil;
+                $(`.participantListing .list-item`).not(':last').remove();
+                dataArray.forEach(element => {
+                    let icon = '<i class="far fa-user"></i>';
+                    // Strukcture
+                    let html = `
+                        <a class="banner color small list-item">
+                            <div class="title">
+                                <h3>${icon}${element.name}</h3>
+                            </div>
+                        </a>
+                    `;
+                    $(`.participantListing`).prepend(html);
+                });
+            }
+        }
+
     };
 </script>
+<!-- Listing Participant -->
+<?- include('./parts/dialog/class-participant'); ?>
 <!-- Tambah Postingan Kelas -->
 <?- include('./parts/dialog/add-post-class'); ?>
 <!-- Invite Kelas -->

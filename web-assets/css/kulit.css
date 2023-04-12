@@ -532,6 +532,9 @@ main > .content > *,
 		transform: rotate(359deg);
 	}
 }
+.hoverable{
+	cursor: pointer;
+}
 .fa-spinner-third{
 	animation: spinning 1s infinite;
 }

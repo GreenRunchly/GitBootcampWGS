@@ -53,30 +53,68 @@ router.post('/join', [
                     });
                     return;
 
-                }else{ // Menambahkan akun ke kelas (join kelas)
-                    
-                    let sqlsyn = `
-                    INSERT INTO pengguna_class_joined (id_owner, id_class) 
-                    VALUES ( ?, ? )
+                }else{ // Cek Kapasitas Kelas dan Menambahkan akun ke kelas (join kelas)
+
+                    // Init SQL Query Syntax
+                    let sqlsyn = ``; let sqlparams = [];
+
+                    // Mengambil kelas yang dimaksud
+                    sqlsyn += `
+                    SELECT k.max_user FROM kelas k
+                    WHERE k.id = ?;
                     `;
-                    pooldb.query( sqlsyn, [akun.id, id_class], (err, result) => { 
-                        
-                        if (err){ // Jika Error Syntax atau semacamnya
+                    sqlparams.push(id_class);
+
+                    // Mengambil kelas yang dimaksud
+                    sqlsyn += `
+                    SELECT p.id_owner, p.id_class FROM pengguna_class_joined p
+                    WHERE p.id_class = ?;
+                    `;
+                    sqlparams.push(id_class);
+
+                    // Eksekusi Query
+                    pooldb.query( sqlsyn, sqlparams, (err, result_) => { 
+                        if (err){ // Cek ada error atau tidak
+                            
                             res.status(200).json({
                                 pesan : `Kesalahan Internal (${err})`, error : 1
                             });
                             return;
-                        } else { // Menampilkan pesan berhasil
+                
+                        } else { // Jika error tidak ditemukan
                             
-                            res.status(200).json({
-                                pesan : `Berhasil Join!`, sukses : 1
+                            if (result_[1].length >= result_[0][0].max_user){ // Jika kapasitas sudah penuh
+                                res.status(200).json({
+                                    pesan : `Kelas sudah penuh!`, error : 1
+                                });
+                                return;
+                            }
+                            
+                            let sqlsyn = `
+                            INSERT INTO pengguna_class_joined (id_owner, id_class) 
+                            VALUES ( ?, ? )
+                            `;
+                            pooldb.query( sqlsyn, [akun.id, id_class], (err, result) => { 
+                                
+                                if (err){ // Jika Error Syntax atau semacamnya
+                                    res.status(200).json({
+                                        pesan : `Kesalahan Internal (${err})`, error : 1
+                                    });
+                                    return;
+                                } else { // Menampilkan pesan berhasil
+                                    
+                                    res.status(200).json({
+                                        pesan : `Berhasil Join!`, sukses : 1
+                                    });
+                                    return;
+
+                                }
+                                
                             });
-                            return;
 
                         }
-                        
                     });
-
+                
                 };
                    
             });

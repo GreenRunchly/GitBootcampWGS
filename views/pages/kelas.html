@@ -8,35 +8,32 @@
         <h3><span class="dashboardSayDesc"></span></h3>
     </div>
 </header>
-<div class="blok-list flex tiles tiles-s2">
-    <a class="banner hoverable small list-item" href="/pengaturan">
+<!-- <div class="blok-list flex tiles tiles-s2">
+    <a class="banner hoverable small list-item">
         <div class="title">
-            <h2><i class="fas fa-user-cog"></i>Pengaturan Akun</h2>
-            <p>Atur data diri mu dengan sebenar-benarnya!</p>
+            <h2><i class="far fa-crown"></i>Hosted Class</h2>
+            <p>Owned 12 Classes</p>
         </div>
     </a>
-    <a class="banner hoverable small list-item" href="/rewards">
+    <a class="banner hoverable small list-item">
         <div class="title">
-            <h2><i class="fas fa-stars"></i>Reward</h2>
-            <p>Belum ada informasi terbaru, cek lagi nanti.</p>
+            <h2><i class="fas fa-project-diagram"></i>Joined Class</h2>
+            <p>Joined 12 Classes</p>
         </div>
     </a>
+</div> -->
+
+<div class="blok-list flex">
+    <div class="item-group">
+        <label><b style="font-size: 1.3rem;">Accessible Classes</b></label>
+        <input type="text" class="searchInput" area="kelasListing" placeholder="Type here to search...">
+    </div>
 </div>
-<br><h2>Hosted Class</h2>
-<div class="blok-list kelasCreatedListing">
-    <a class="banner hoverable small list-item ghost" onclick="modalShow('createKelas');">
-        <div class="title">
-            <h3><i class="far fa-question"></i>Tidak ada..</h3>
-            <p>Buat kelas mu sendiri, dan ajar peserta mu!</p>
-        </div>
-    </a>
-</div>
-<br><h2>Invited Class</h2>
-<div class="blok-list kelasJoinedListing">
+<div class="blok-list kelasListing">
     <a class="banner hoverable small list-item ghost" onclick="modalShow('joinKelas');">
         <div class="title">
-            <h3><i class="far fa-question"></i>Tidak Ada..</h3>
-            <p>Join kelas sesorang untuk memulai!</p>
+            <h3><i class="far fa-question"></i>Tidak ada..</h3>
+            <p>Buat kelas mu sendiri, atau join kelas lain!</p>
         </div>
     </a>
 </div>
@@ -89,24 +86,25 @@
         async function loadPageData() {
             if (DataAkun.kelas_joined){
                 let dataArray = DataAkun.kelas_joined;
-                $(`.kelasJoinedListing .list-item`).not(':last').remove();
-                $(`.kelasCreatedListing .list-item`).not(':last').remove();
+                $(`.kelasListing .list-item`).not(':last').remove();
                 dataArray.forEach(element => {
+                    let icon = '<i class="fas fa-project-diagram"></i>';
+                    if (element.id_owner == DataAkun.id){
+                        icon = '<i class="far fa-crown"></i>';
+                    }
                     // Strukcture
+                    let searchAs = (element.class_name).toUpperCase();
                     let html = `
-                        <a class="banner hoverable small list-item" href="/kelas/${element.id}">
+                        <a class="banner hoverable small list-item searchItem" search-as="${searchAs}" href="/kelas/${element.id}">
                             <div class="title">
-                                <h3><i class="far fa-chalkboard-teacher"></i>${element.class_name}</h3>
+                                <h3>${icon}${element.class_name}</h3>
                                 <h4><span>${element.room}</span> - <span>${element.subject}</span></h4>
-                                <p>${element.class_desc}</p>
+                                <p class="searchItem" search-as="${searchAs}">${element.class_desc}</p>
+                                <p>Hosted by <span><b>${element.owner_name}</b></span></p>
                             </div>
                         </a>
                     `;
-                    if (element.id_owner == DataAkun.id){
-                        $(`.kelasCreatedListing`).prepend(html);
-                    }else{
-                        $(`.kelasJoinedListing`).prepend(html);
-                    }
+                    $(`.kelasListing`).prepend(html);
                 });
             };
         }; 
