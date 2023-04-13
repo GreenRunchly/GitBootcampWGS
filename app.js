@@ -79,6 +79,7 @@ app.use("/template", express.static('uploads/template'));
 /* Router API */
 
 // Akun /akun/:idakun
+app.use('/api/akun/daftar', auth.next, require('./route-api/akun-daftar'));
 app.use('/api/akun/masuk', auth.next, require('./route-api/akun-masuk'));
 app.use('/api/akun/keluar', auth.akun, require('./route-api/akun-keluar'));
 app.use('/api/akun/saya', auth.akun, require('./route-api/akun-saya'));

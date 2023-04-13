@@ -100,7 +100,7 @@
             async function lakukan() {
                 // Download Old File
                 if (aksi == 'download'){
-                    var dlFileTag = document.createElement("a");
+                    let dlFileTag = document.createElement("a");
                     dlFileTag.href = '/postingan/<?= id_informasihash ?>.docx';
                     dlFileTag.download = $("#editPostForm #input_title").val();
                     // Buat, Klik, Hapus
@@ -109,9 +109,9 @@
                 }
                 // Download Template
                 if (aksi == 'download-template'){
-                    var dlFileTag = document.createElement("a");
+                    let dlFileTag = document.createElement("a");
                     dlFileTag.href = '/template/template-evaluasi.docx';
-                    dlFileTag.download = $("#editPostForm #input_title").val();
+                    dlFileTag.download = 'Template Evaluasi.docx'
                     // Buat, Klik, Hapus
                     document.body.appendChild(dlFileTag); dlFileTag.click(); document.body.removeChild(dlFileTag);
                     window.location.reload();

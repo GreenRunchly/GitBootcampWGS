@@ -35,7 +35,7 @@ aksiauth.akun = (req, res, next) => {
             // Cek User Username dan Password dan ID User
             let sqlsyn = `
             SELECT * FROM pengguna 
-            WHERE id= ? AND username= ? AND MD5(password)= ?
+            WHERE id= ? AND username= ? AND password= ?
             `;
             pooldb.query(sqlsyn, [userid, username, password], (err, result) => {
                 

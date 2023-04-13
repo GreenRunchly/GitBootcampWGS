@@ -41,7 +41,7 @@ router.post('/', [
                     pesan : `Username tidak ditemukan!`, error : 1
                 });
                 return;
-            }else if (result[0].password != password) {
+            }else if (result[0].password != md5(password)) {
                 // Password tidak cocok (CASE SENSITIVE)
                 res.status(200).json({
                     pesan : `Password tidak cocok!`, error : 1

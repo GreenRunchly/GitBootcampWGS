@@ -17,6 +17,13 @@ router.get('/portal', auth.noneedlogin, (req, res) => {
     
 });
 
+router.get('/portal-daftar', auth.noneedlogin, (req, res) => {
+
+    res.status(200).render('pages/portal-daftar.html');
+    return;
+    
+});
+
 router.get('/dashboard', auth.passwebpage, auth.akun, (req, res) => {
 
     if (req.passwebpage){
@@ -76,32 +83,32 @@ router.get('/kelas/:idkelas/informasi/:idinformasi', auth.passwebpage, auth.akun
 
 });
 
-router.get('/pengaturan', auth.passwebpage, auth.akun, (req, res) => {
+// router.get('/pengaturan', auth.passwebpage, auth.akun, (req, res) => {
 
-    if (req.passwebpage){
-        let {akun} = req.bridge; // Mengambil data akun
+//     if (req.passwebpage){
+//         let {akun} = req.bridge; // Mengambil data akun
 
-        res.status(200).render('pages/comingsoon.html');
-        return;    
-    }else{
-        res.redirect('/portal');
-        return;
-    }
+//         res.status(200).render('pages/comingsoon.html');
+//         return;    
+//     }else{
+//         res.redirect('/portal');
+//         return;
+//     }
 
-});
+// });
 
-router.get('/rewards', auth.passwebpage, auth.akun, (req, res) => {
+// router.get('/rewards', auth.passwebpage, auth.akun, (req, res) => {
 
-    if (req.passwebpage){
-        let {akun} = req.bridge; // Mengambil data akun
+//     if (req.passwebpage){
+//         let {akun} = req.bridge; // Mengambil data akun
 
-        res.status(200).render('pages/comingsoon.html');
-        return;    
-    }else{
-        res.redirect('/portal');
-        return;
-    }
+//         res.status(200).render('pages/comingsoon.html');
+//         return;    
+//     }else{
+//         res.redirect('/portal');
+//         return;
+//     }
 
-});
+// });
 
 module.exports = router;
