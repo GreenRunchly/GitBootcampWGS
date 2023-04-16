@@ -88,6 +88,7 @@
                     $('#addPost').remove();
                 }else{
                     $("#konfirmasiQuit .main .title h1").html('Menghapus kelas?');
+                    $("#konfirmasiQuit .main .title p").html('Seluruh participant dan anda akan dikeluarkan secara permanen, yakin?');
                     $(".menuButtonQuitClass .text span").html('Terminate Class');
                     $(".menuButtonQuitClass .icon").html('<i class="fas fa-bomb"></i>');
 
@@ -192,10 +193,11 @@
                 let dataArray = DataPageParticipant.hasil;
                 $(`.participantListing .list-item`).not(':last').remove();
                 dataArray.forEach(element => {
+                    let searchAs = (element.name).toUpperCase();
                     let icon = '<i class="far fa-user"></i>';
                     // Strukcture
                     let html = `
-                        <a class="banner color small list-item">
+                        <a class="banner color small list-item searchItem" search-as="${searchAs}">
                             <div class="title">
                                 <h3>${icon}${element.name}</h3>
                             </div>

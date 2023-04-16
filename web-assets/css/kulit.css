@@ -359,6 +359,7 @@ main > .content > *,
 .blok-list.flex{
 	display: flex;
 	gap: 0.4rem;
+	flex-grow: 1;
 }
 .blok-list.flex.center{
 	justify-content: center;

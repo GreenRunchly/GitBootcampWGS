@@ -7,7 +7,7 @@ const pooldb = require('../module-db');
 const modval = require('../module-validator');
 
 router.post('/', [
-    modval.midval.body('username').not().isEmpty().withMessage('Harap isi Username!').trim().escape(),
+    modval.midval.body('username').not().isEmpty().withMessage('Harap isi Username!').isAlphanumeric().withMessage('Hanya huruf dan angka yang diperbolehkan').trim().escape(),
     modval.midval.body('fullname').not().isEmpty().withMessage('Harap isi Nama Lengkap!').trim().escape(),
     modval.midval.body('email').not().isEmpty().withMessage('Harap isi Email!').isEmail().withMessage('Email tidak valid').trim().escape(),
     modval.midval.body('password').not().isEmpty().withMessage('Harap isi Password!').trim().escape(),
