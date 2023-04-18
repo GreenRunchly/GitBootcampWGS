@@ -8,6 +8,28 @@ const modval = require('../module-validator');
 // Module tools
 const tools = require('../module-tools');
 
+// Module JQuery dengan JSDOM
+const { JSDOM } = require( "jsdom" );
+const { map } = require('jquery');
+const { window } = new JSDOM( "<body></body>" );
+const $ = require( "jquery" )( window );
+
+// Pakai async biar proses ini diselesaikan terlebih dahulu dan menunggu hasil
+async function wordProcessor(res, req, rawhtml) {
+    $("body").html(rawhtml); // Init HTML
+
+    let metaData = [];
+    //console.log($("img:first-child").attr('src'));
+    // Mengambil Thumbnail
+    metaData.thumbnail = $("img:first-child").attr('src');
+    $("body img:first-child").remove(); // menghapus img tag pada main content
+
+    // Main Content
+    metaData.maincontent = $("body").html();
+
+    return metaData;
+};
+
 // Menambahkan informasi pada kelas yang sudah ditentukan
 router.post('/:idkelas/informasi/do', [
     modval.midval.param('idkelas').not().isEmpty().withMessage('ID Kelas tidak terdeteksi!').trim().escape(),
@@ -91,14 +113,17 @@ router.post('/:idkelas/informasi/do', [
                                     
                                     let input_content = result_.value; // HTML Output
 
-                                    lanjut(); console.log('here');
+                                    wordProcessor(res, req, input_content).then((resulthtml) => {
+                                        input_content = resulthtml;
+                                        nextProcedure();
+                                    });
 
-                                    function lanjut() {
+                                    function nextProcedure() {
                                         // Melakukan Update Postingan
                                         let sqlsyn = `
-                                        UPDATE informasi SET title= ? , topic= ? , content= ? WHERE id= ? 
+                                        UPDATE informasi SET title= ? , topic= ? , thumbnail=? , content= ? WHERE id= ? 
                                         `;
-                                        let sqlsyninput = [modval.validator.escape(title), modval.validator.escape(topic), input_content, idrecord];
+                                        let sqlsyninput = [modval.validator.escape(title), modval.validator.escape(topic), input_content.thumbnail, input_content.maincontent, idrecord];
                                         
                                         pooldb.query( sqlsyn, sqlsyninput, (err, result) => { 
                                             
@@ -187,9 +212,12 @@ router.post('/:idkelas/informasi/do', [
 
                             let input_content = result_.value; // HTML Output
                             
-                            lanjut();
+                            wordProcessor(res, req, input_content).then((resulthtml) => {
+                                input_content = resulthtml.maincontent;
+                                nextProcedure();
+                            });
                            
-                            function lanjut() {
+                            function nextProcedure() {
                                 // Menambahkan Postingan 
                                 let sqlsyn = `
                                 INSERT INTO informasi (id_owner, id_class, title, topic, content) 

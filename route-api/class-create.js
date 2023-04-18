@@ -11,7 +11,6 @@ router.post('/create',[
     modval.midval.body('desc').isLength({ min: 0, max: 150 }).withMessage('Karakter Deskripsi harus minimal 5 dan maksimal 100!').trim().escape(),
     modval.midval.body('subject').not().isEmpty().withMessage('Subject tidak boleh kosong!').trim().escape(),
     modval.midval.body('room').not().isEmpty().withMessage('Ruangan tidak boleh kosong!').trim().escape(),
-    modval.midval.body('visible').not().isEmpty().withMessage('Tipe kelas tidak boleh kosong!').trim().escape(),
     modval.midval.body('max_user').not().isEmpty().withMessage('Penentu maksimal peserta tidak boleh kosong!').trim().escape()
 ], (req, res) => {
     
@@ -21,7 +20,7 @@ router.post('/create',[
     }
 
     let {akun} = req.bridge; // Mengambil data akun
-    let {name, desc, subject, room, visible, max_user} = req.body; // Mengambil kode kelas
+    let {name, desc, subject, room, max_user} = req.body; // Mengambil kode kelas
 
     // Batas Max User
     if (modval.validator.isInt(max_user)){
@@ -40,23 +39,23 @@ router.post('/create',[
         return;
     }
 
-    // Cek validasi tipe visible kelas
-    if (modval.validator.isAlpha(visible)){
-        if ((visible == 'public') || (visible == 'private')){}else{
-            // Jika berisi selain public dan private
-            res.status(200).json({
-                pesan : `Isi tipe kelas invalid`, error : 1
-            });
-            return; 
-        }
-    }
+    // // Cek validasi tipe visible kelas
+    // if (modval.validator.isAlpha(visible)){
+    //     if ((visible == 'public') || (visible == 'private')){}else{
+    //         // Jika berisi selain public dan private
+    //         res.status(200).json({
+    //             pesan : `Isi tipe kelas invalid`, error : 1
+    //         });
+    //         return; 
+    //     }
+    // }
     
     // Menambahkan Kelas
     let sqlsyn = `
-    INSERT INTO kelas (id_owner, class_name, class_desc, subject, room, visible, max_user) 
-    VALUES ( ?, ?, ?, ?, ?, ?, ? )
+    INSERT INTO kelas (id_owner, class_name, class_desc, subject, room, max_user) 
+    VALUES ( ?, ?, ?, ?, ?, ? )
     `;
-    pooldb.query( sqlsyn, [akun.id, name, desc, subject, room, visible, max_user], (err, result) => { 
+    pooldb.query( sqlsyn, [akun.id, name, desc, subject, room, max_user], (err, result) => { 
         // Jika Error Syntax atau semacamnya
         if (err){ 
             res.status(200).json({

@@ -2,7 +2,7 @@
     title:'Kelas', navstatus:'informasi-single', akun
 }); ?>
 <!-- Start Main --><main><div class="content">
-<header class="banner">
+<header class="banner pageThumbnail" >
     <div class="title">
         <h2><span class="pageIcon"></span><span class="pageTitle"></span></h2>
         <h3><span class="pageCreated"></span></h3>
@@ -56,6 +56,7 @@
                 $(".pageContent").html(``); // Kosongkan Main Page
                 icon = '<i class="far fa-bookmark"></i>'; // Atur icon sebagai materi
                 $(".pageContent").html(`${Base64.decode(DataPage.content)}`); // Tampilkan konten
+                $(".pageThumbnail").css('background-image',`url("${DataPage.thumbnail}")`);
                 
                 $(".pageIcon").html(icon); // Tampilkan Icon
 

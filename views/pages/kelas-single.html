@@ -141,7 +141,7 @@
                     let searchAs = (element.title).toUpperCase();
                     // Strukcture
                     let html = `
-                        <a class="banner hoverable small list-item searchItem" search-as="${searchAs}" href="/kelas/<?= idkelas ?>/informasi/${element.id}">
+                        <a class="banner hoverable small list-item searchItem" search-as="${searchAs}" href="/kelas/<?= idkelas ?>/informasi/${element.id}" style="background-image:url('${element.thumbnail}');">
                             <div class="title">
                                 <h3>${icon}${element.title}</h3>
                                 <p><span>${waktuFull(element.created)}</span></p>

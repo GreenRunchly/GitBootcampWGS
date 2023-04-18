@@ -11,7 +11,6 @@ router.post('/:idkelas/edit',[
     modval.midval.body('name').isLength({ min: 5, max: 30 }).withMessage('Karakter Nama harus minimal 5 dan maksimal 30!').trim().escape(),
     modval.midval.body('subject').isLength({ min: 1 }).withMessage('Subject tidak boleh kosong!').trim().escape(),
     modval.midval.body('room').isLength({ min: 1 }).withMessage('Ruangan tidak boleh kosong!').trim().escape(),
-    modval.midval.body('visible').not().isEmpty().withMessage('Tipe kelas tidak boleh kosong!').trim().escape(),
     modval.midval.body('max_user').not().isEmpty().withMessage('Penentu maksimal peserta tidak boleh kosong!').trim().escape()
 ], (req, res) => {
 
@@ -21,7 +20,7 @@ router.post('/:idkelas/edit',[
     }
 
     let {akun} = req.bridge; // Mengambil data akun
-    let {name, desc, subject, room, visible, max_user} = req.body; // Mengambil kode kelas
+    let {name, desc, subject, room, max_user} = req.body; // Mengambil kode kelas
     let {idkelas} = req.params; // Parameter kelas  
     
     // Batas Max User
@@ -77,17 +76,17 @@ router.post('/:idkelas/edit',[
     }
 
     function do_the_stuff() {
-        // Cek validasi tipe visible kelas
-        if (modval.validator.isAlpha(visible)){
-            console.log(visible);
-            if ((visible == 'public') || (visible == 'private')){}else{
-                // Jika berisi selain public dan private
-                res.status(200).json({
-                    pesan : `Isi tipe kelas invalid`, error : 1
-                });
-                return; 
-            }
-        }
+        // // Cek validasi tipe visible kelas
+        // if (modval.validator.isAlpha(visible)){
+        //     console.log(visible);
+        //     if ((visible == 'public') || (visible == 'private')){}else{
+        //         // Jika berisi selain public dan private
+        //         res.status(200).json({
+        //             pesan : `Isi tipe kelas invalid`, error : 1
+        //         });
+        //         return; 
+        //     }
+        // }
 
         // Cek Ada di kelas tersebut atau tidak
         let sqlsyn = `
@@ -114,10 +113,10 @@ router.post('/:idkelas/edit',[
                 }
                 // Remove record from db
                 let sqlsyn = `
-                UPDATE kelas SET class_name= ? ,class_desc= ? ,subject= ? ,room= ? ,visible= ? ,max_user= ? 
+                UPDATE kelas SET class_name= ? ,class_desc= ? ,subject= ? ,room= ? ,max_user= ? 
                 WHERE id= ?
                 `;
-                pooldb.query( sqlsyn, [name, desc, subject, room, visible, max_user, idkelas], (err, result) => { 
+                pooldb.query( sqlsyn, [name, desc, subject, room, max_user, idkelas], (err, result) => { 
                     
                     if (err){ // Jika Error Syntax atau semacamnya
                         res.status(200).json({
