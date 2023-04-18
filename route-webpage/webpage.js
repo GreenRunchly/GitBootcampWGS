@@ -76,7 +76,27 @@ router.get('/kelas/:idkelas/informasi/:idinformasi', auth.passwebpage, auth.akun
 
 });
 
+<<<<<<< Updated upstream
 router.get('/pengaturan', auth.passwebpage, auth.akun, (req, res) => {
+=======
+router.get('/kelas/:idkelas/informasi/:idinformasi/evaluation', auth.passwebpage, auth.akun, (req, res) => {
+
+    if (req.passwebpage){
+        let {akun} = req.bridge; // Mengambil data akun
+        let {idkelas, idinformasi} = req.params;
+        let id_informasihash = md5(parseInt(idinformasi)+'postingan'); // Hash File Posting
+        
+        res.status(200).render('pages/informasi-single.html', {akun, idkelas, idinformasi, id_informasihash});
+        return;    
+    }else{
+        res.redirect('/portal');
+        return;
+    }
+
+});
+
+// router.get('/pengaturan', auth.passwebpage, auth.akun, (req, res) => {
+>>>>>>> Stashed changes
 
     if (req.passwebpage){
         let {akun} = req.bridge; // Mengambil data akun

@@ -86,6 +86,7 @@
                 if (data.sukses) {
                     DataPageInformasi = data.hasil;
                     loadPageInformasiData();
+                    loadAjaxParticipant();
                     console.log(data.hasil);
                 }else{
                     if (data.logout){
@@ -124,10 +125,65 @@
                 });
             };
         }; 
+<<<<<<< Updated upstream
+=======
+
+        function loadAjaxParticipant() {
+            // Load Data Peserta
+            $.ajax({
+                type: "GET",
+                url: '/api/kelas/<?= idkelas ?>/all-peserta',
+                cache: false,
+                success: function(data) {
+                    if (data.sukses) {
+                        DataPageParticipant = data;
+                        loadPageParticipant();
+                        console.log(data.hasil);
+                    }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
+                        notifAdd('Gagal Mengambil Data (Participant)!', data.pesan, 'error', 0, false, true);
+                    };
+                },
+                error: function(xhr, status, error) {
+                    notifAdd('Gagal Mengambil Data (Participant)!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+                }
+            });
+            async function loadPageParticipant() {
+                if ((DataPageParticipant) && (DataPage)){
+                    $(".pageParticipantCurrent").html(DataPageParticipant.current_user);
+                    $(".pageParticipantMax").html(DataPageParticipant.max_user);   
+                    
+                    
+                    let dataArray = DataPageParticipant.hasil;
+                    $(`.participantListing .list-item`).not(':last').remove();
+                    dataArray.forEach(element => {
+                        let searchAs = (element.name).toUpperCase();
+                        let icon = '<i class="far fa-user"></i>';
+                        if (DataPage.id_owner == element.id){
+                            icon = '<i class="far fa-crown"></i>';
+                        }
+                        // Strukcture
+                        let html = `
+                            <a class="banner color small list-item searchItem" search-as="${searchAs}">
+                                <div class="title">
+                                    <h3>${icon}${element.name}</h3>
+                                </div>
+                            </a>
+                        `;
+                        $(`.participantListing`).prepend(html);
+                    });
+                }
+            }
+        }
+
+>>>>>>> Stashed changes
     };
 </script>
 
 <!-- Tambah Postingan Kelas -->
+<<<<<<< Updated upstream
 <dialog id="addPost">
     <div class="panel-back aksiModal" value="close"></div>
     <div class="content">
@@ -445,5 +501,14 @@
     </script>
 </dialog>
 
+=======
+<?- include('./parts/dialog/class-post-add'); ?>
+<!-- Invite Kelas -->
+<?- include('./parts/dialog/class-invite'); ?>
+<!-- Edit Kelas -->
+<?- include('./parts/dialog/class-edit'); ?>
+<!-- Keluar dari kelas -->
+<?- include('./parts/dialog/class-quit'); ?>
+>>>>>>> Stashed changes
 <!-- Account Handler End -->
 <?- include('./parts/footer'); ?>

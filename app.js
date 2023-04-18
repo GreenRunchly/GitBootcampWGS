@@ -27,6 +27,7 @@ app.set("view options", {
     delimiter: "?",
     closeDelimiter: ">",
 });
+app.set('etag', false); // Biar tidak tercache per page
 
 // Use Cookie
 app.use(cookieParser());
@@ -75,9 +76,38 @@ app.use("/postingan", express.static('uploads/postingan'));
 
 
 /* Router API */
+<<<<<<< Updated upstream
 app.use('/api/akses', auth.next, require('./route-api/akses'));
 app.use('/api/akun', auth.akun, require('./route-api/akun'));
 app.use('/api/kelas', auth.akun, require('./route-api/kelas'));
+=======
+
+// Akun /akun/:idakun
+app.use('/api/akun/daftar', auth.next, require('./route-api/akun-daftar'));
+app.use('/api/akun/masuk', auth.next, require('./route-api/akun-masuk'));
+app.use('/api/akun/keluar', auth.akun, require('./route-api/akun-keluar'));
+app.use('/api/akun/saya', auth.akun, require('./route-api/akun-saya'));
+app.use('/api/akun/', auth.akun, require('./route-api/akun'));
+
+// Evaluation
+app.use('/api/kelas/', auth.akun, require('./route-api/class-posts-evaluation-start'));
+
+// Postingan Kelas /kelas/:idkelas/informasi/:idinformasi
+app.use('/api/kelas/', auth.akun, require('./route-api/class-posts-saya'));
+app.use('/api/kelas/', auth.akun, require('./route-api/class-posts-do'));
+app.use('/api/kelas/', auth.akun, require('./route-api/class-posts-delete'));
+app.use('/api/kelas/', auth.akun, require('./route-api/class-posts'));
+
+// Kelas /kelas/:idkelas/
+app.use('/api/kelas/', auth.akun, require('./route-api/class-saya'));
+app.use('/api/kelas/', auth.akun, require('./route-api/class-create'));
+app.use('/api/kelas/', auth.akun, require('./route-api/class-edit'));
+app.use('/api/kelas/', auth.akun, require('./route-api/class-invite'));
+app.use('/api/kelas/', auth.akun, require('./route-api/class-join'));
+app.use('/api/kelas/', auth.akun, require('./route-api/class-all-peserta'));
+app.use('/api/kelas/', auth.akun, require('./route-api/class-quit'));
+app.use('/api/kelas/', auth.akun, require('./route-api/class'));
+>>>>>>> Stashed changes
 
 /* Router Web Page */
 app.use('/', require('./route-webpage/webpage'));

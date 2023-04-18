@@ -1,0 +1,90 @@
+<dialog id="editKelas">
+    <div class="panel-back aksiModal" value="close"></div>
+    <div class="content">
+        <div class="main">
+            <header class="banner small">
+                <div class="title">
+                    <h1><i class="fas fa-cog"></i>Class Preferences</h1>
+                    <p>Ubah nama atau subject kelas mu disini!</p>
+                </div>
+            </header>
+            <form id="editForm" action="/api/kelas/<?= idkelas ?>/edit" method="post">
+                <div class="blok-list">
+                    <div class="blok-list">
+                        <div class="item-group">
+                            <label>Class Name</label>
+                            <input type="text" name="name" id="input_name" maxlength="30" placeholder="Masukan label kelas.. (Kimia Semester 1)">
+                        </div>
+                        <div class="item-group">
+                            <label>Description</label>
+                            <input type="text" name="desc" id="input_desc" maxlength="100" placeholder="Deskripsikan kelasmu.. (Opsional)">
+                        </div>
+                        <div class="item-group">
+                            <label>Subject</label>
+                            <input type="text" name="subject" id="input_subject" placeholder="Apa yang akan diajari? (Kimia)">
+                        </div>
+                        <div class="item-group">
+                            <label>Room</label>
+                            <input type="text" name="room" id="input_room" placeholder="Pada ruang berapa? (10 MIPA 1 / 202)">
+                        </div> 
+                    </div>
+                    <div class="blok-list flex">
+                        <div class="item-group">
+                            <label>Max Users</label>
+                            <input type="number" name="max_user" id="input_max_user" placeholder="1-100" min="1" max="100" value="10">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="options">
+            <div class="blok-list flex">
+                <button class="button aksiModal" value="ok">
+                    <div class="icon"><i class="far fa-check"></i></div>
+                    <div class="text"><span>Simpan</span></div>
+                </button>
+                <button class="button aksiModal" value="batal">
+                    <div class="icon"><i class="far fa-times"></i></div>
+                    <div class="text"><span>Tidak Jadi</span></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Handle response masuk modal
+        modalResponse('editKelas', (modalid) =>{
+            let form = $(`#editForm`);
+            let actionUrl = form.attr('action');
+            $.ajax({
+                type: "POST",
+                url: actionUrl,
+                data: form.serialize(),
+                cache: false,
+                success: function(data) {
+                    if (data.sukses) {
+                        async function lakukan() {
+                            await notifAdd('Edit Kelas Berhasil!', data.pesan, 'ok', 0, true, true);
+                            await modalReset(modalid);
+                            await modalHide(modalid);
+                            loadPageInitial(); // Reload Data User
+                        }; lakukan();
+                    }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
+                        modalFailed(modalid);
+                        notifAdd('Gagal Edit Kelas!', data.pesan, 'error', 0, true, true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    modalFailed(modalid);
+                    notifAdd('Gagal Edit Kelas!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+                }
+            });
+        }, (modalid) =>{
+            async function lakukan() {
+                // Nothing
+            }; lakukan(); 
+        });
+    </script>
+</dialog>

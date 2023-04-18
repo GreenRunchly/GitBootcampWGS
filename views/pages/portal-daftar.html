@@ -1,0 +1,55 @@
+<?- include('./parts/head', {
+    title:'Masuk', desc:'Otentikasi dirimu terlebih dahulu!',
+    navstatus : 'login'
+}); ?>
+<!-- Start Main --><main><div class="content">
+<header class="banner">
+    <div class="title">
+        <h1><i class="fas fa-pencil"></i>Daftar Akun</h1>
+        <p>Sebelum anda menggunakan Aplikasi E-Learning ini dan tidak memiliki akun, harap daftar terlebih dahulu menggunakan metode di samping.</p>
+    </div>
+</header>
+<form id="registerForm" action="/api/akun/daftar" method="post" autocomplete="off">
+    <div class="blok-list">
+        <div class="blok-list">
+            <div class="item-group">
+                <label>Username</label>
+                <input type="text" name="username"  id="input_username" placeholder="Type username here.." required>
+            </div>
+            <div class="item-group">
+                <label>Full Name</label>
+                <input type="text" name="fullname"  id="input_fullname" placeholder="Type your name here.." required>
+            </div>
+            <div class="item-group">
+                <label>Email</label>
+                <input type="email" name="email"  id="input_email" placeholder="Type email here.." required>
+            </div>
+            <div class="blok-list flex">
+                <div class="item-group">
+                    <label>Password</label>
+                    <input type="password" name="password" id="input_password" placeholder="Type password here.." required>
+                </div>
+                <div class="item-group">
+                    <label>Password Confirm</label>
+                    <input type="password" name="password_confirm" id="input_password_confirm" placeholder="Type password again here.." required>
+                </div> 
+            </div>           
+        </div>
+        <button class="button center active" type="submit" value="batal">
+            <div class="icon"><i class="far fa-pencil"></i></div>
+            <div class="text"><span>Daftarkan!</span></div>
+        </button>
+    </div>
+</form>
+<script>
+    // this is the id of the form
+    $("#registerForm").submit(function(e) {
+        e.preventDefault(); 
+        modalShow('konfirmasiDaftar'); // Show Modal
+    });
+</script>
+</div></main> <!-- End of Main -->
+<!-- Tambah Postingan Kelas -->
+<?- include('./parts/dialog/daftar'); ?>
+
+<?- include('./parts/footer'); ?>

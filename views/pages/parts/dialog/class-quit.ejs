@@ -1,0 +1,59 @@
+<dialog id="konfirmasiQuit">
+    <div class="panel-back aksiModal" value="close"></div>
+    <div class="content">
+        <div class="main">
+            <header class="banner small">
+                <div class="title">
+                    <h1>Ingin meninggalkan kelas?</h1>
+                    <p>Anda tidak akan memiliki akses kelas setelah ini, yakin?</p>
+                </div>
+            </header>
+        </div>
+        <div class="options">
+            <div class="blok-list flex">
+                <button class="button aksiModal" value="ok">
+                    <div class="icon"><i class="far fa-check"></i></div>
+                    <div class="text"><span>Quit</span></div>
+                </button>
+                <button class="button aksiModal" value="batal">
+                    <div class="icon"><i class="far fa-times"></i></div>
+                    <div class="text"><span>Tidak Jadi</span></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Handle response masuk modal
+        modalResponse('konfirmasiQuit', (modalid) =>{
+            $.ajax({
+                type: "POST",
+                url: '/api/kelas/<?= idkelas ?>/quit',
+                cache: false,
+                success: function(data) {
+                    if (data.sukses) {
+                        async function lakukan() {
+                            await notifAdd('Berhasil Keluar dari Kelas!', data.pesan, 'ok', 0, true, true);
+                            await modalHide(modalid);
+                            window.location = '/kelas';
+                        }; lakukan();
+                    }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
+                        modalFailed(modalid);
+                        notifAdd('Gagal Keluar dari kelas!', data.pesan, 'error', 0, true, true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    modalFailed(modalid);
+                    notifAdd('Gagal Keluar dari kelas!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+                }
+            });
+        }, (modalid) =>{
+            async function lakukan() {
+                await notifAdd('Batal Mundur!', 'Good thing i hope!', 'error', 0, false, true);
+                await modalHide(modalid);
+            }; lakukan(); 
+        });
+    </script>
+</dialog>

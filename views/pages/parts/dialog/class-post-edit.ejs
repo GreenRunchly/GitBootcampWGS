@@ -1,77 +1,4 @@
-<?- include('./parts/head', {
-    title:'Kelas', navstatus:'informasi-single', akun
-}); ?>
-<!-- Start Main --><main><div class="content">
-<header class="banner">
-    <div class="title">
-        <h2><span class="pageIcon"></span><span class="pageTitle"></span></h2>
-        <h3><span class="pageCreated"></span></h3>
-    </div>
-</header>
-<div class="blok-list word-content pageContent">
-
-</div>
-</div></main> <!-- End of Main -->
-
-<!-- Account Handler -->
-<?- include('./parts/module-akun'); ?>
-<script>
-    var DataPage = {}; var DataPageInformasi = {};
-    function loadPageInitial() {
-        $(".userAkunName").html(`${DataAkun.name}`);
-
-        // Tombol Mundur
-        $(".backPageButton").attr('href', '/kelas/<?= idkelas ?>');
-        
-        // Load Data Kelas Joined
-        $.ajax({
-            type: "GET",
-            url: '/api/kelas/<?= idkelas ?>/informasi/<?= idinformasi ?>',
-            cache: false,
-            success: function(data) {
-                if (data.sukses) {
-                    DataPage = data.hasil[0];
-                    console.log(DataPage);
-                    loadPageData();
-                }else{
-                    notifAdd('Gagal Mengambil Data (Informasi)!', data.pesan, 'error', 0, false, true);
-                    window.location = '/kelas/<?= idkelas ?>';
-                };
-            },
-            error: function(xhr, status, error) {
-                notifAdd('Gagal Mengambil Data (Informasi)!', `${error} (${status} / ${status})`, 'error', 0, true, true);
-                window.location = '/kelas/<?= idkelas ?>';
-            }
-        });
-        async function loadPageData() {
-            let icon = '<i class="far fa-bookmark"></i>';
-            if (DataPage){
-                $(".pageTitle").html(`${DataPage.title}`);
-                $(".pageCreated").html(`${waktuFull(DataPage.created)}`);
-                $(".pageContent").html(`${Base64.decode(DataPage.content)}`);
-                $("#editPostForm #input_title").val( ($('<textarea />').html(DataPage.title).text()) );
-                switch (DataPage.type) {                    
-                    default:
-                        icon = '<i class="far fa-bookmark"></i>';
-                        break;
-                }
-                $(".pageIcon").html(icon);
-                if (DataPage.id_owner != DataAkun.id){
-                    $("#edit_post_button").remove();
-                }else{
-                    
-                }
-            }else{
-                notifAdd('Access Failed', `Uknown Issue`, 'error', 0, true, true);
-                window.location = '/kelas/<?= idkelas ?>';
-            }
-        };
-    };
-</script>
-
-<!-- Edit Postingan Kelas -->
-<<<<<<< Updated upstream
-<dialog id="editPost">
+<dialog id="editPost" class="wide-med">
     <div class="panel-back aksiModal" value="close"></div>
     <div class="content">
         <div class="main">
@@ -94,30 +21,34 @@
                             <input type="file" name="content" id="input_content" >
                         </div>
                     </div>
-                    <!-- <div class="blok-list flex">
+                    <div class="blok-list flex">
                         <div class="item-group">
-                            <label>Topik</label>
-                            <select name="input_type" id="input_type">
-                                <option value="all">Semua Topik</option>
+                            <label>Topic</label>
+                            <select name="topic" id="input_topic">
+                                <option value="all">All Topic</option>
                             </select>
                         </div>
                         <div class="item-group">
                             <label>Format</label>
-                            <select name="input_type" id="input_type">
-                                <option value="materi">Materi</option>
-                                <option value="tugas">Tugas</option>
+                            <select name="format" id="input_format">
+                                <option value="material">Material</option>
+                                <option value="evaluation">Evaluation</option>
                             </select>
                         </div>
-                    </div> -->
+                    </div>
                     <input type="hidden" name="idinformasi" value="<?= idinformasi ?>"/>
                 </div>
             </form>
         </div>
         <div class="options">
             <div class="blok-list flex">
-                <button class="button center aksiModal" value="download">
-                    <div class="icon"><i class="fas fa-cloud-download"></i></div>
-                    <div class="text"><span>Download File</span></div>
+                <button class="button aksiModal" value="download">
+                    <div class="icon"><i class="far fa-undo"></i></div>
+                    <div class="text"><span>Get Old File</span></div>
+                </button>
+                <button class="button aksiModal buttonEvaluationTemplate" value="download-template">
+                    <div class="icon"><i class="far fa-file-word"></i></div>
+                    <div class="text"><span>Get Template</span></div>
                 </button>
             </div>
             <div class="blok-list flex">
@@ -167,23 +98,37 @@
             });
         }, (modalid, aksi) =>{
             async function lakukan() {
-                // Nothing
+                // Download Old File
                 if (aksi == 'download'){
-                    var dlFileTag = document.createElement("a");
+                    let dlFileTag = document.createElement("a");
                     dlFileTag.href = '/postingan/<?= id_informasihash ?>.docx';
                     dlFileTag.download = $("#editPostForm #input_title").val();
                     // Buat, Klik, Hapus
                     document.body.appendChild(dlFileTag); dlFileTag.click(); document.body.removeChild(dlFileTag);
+                    window.location.reload();
+                }
+                // Download Template
+                if (aksi == 'download-template'){
+                    let dlFileTag = document.createElement("a");
+                    dlFileTag.href = '/template/template-evaluasi.docx';
+                    dlFileTag.download = 'Template Evaluasi.docx'
+                    // Buat, Klik, Hapus
+                    document.body.appendChild(dlFileTag); dlFileTag.click(); document.body.removeChild(dlFileTag);
+                    window.location.reload();
                 }
             }; lakukan(); 
         });
+        // Cek format untuk sesuaikan file template
+        setInterval(() => {
+            switch ($('#input_format').val()) {
+                case 'evaluation':
+                    $('.buttonEvaluationTemplate').show();
+                    break;
+            
+                default:
+                    $('.buttonEvaluationTemplate').hide();
+                    break;
+            };
+        }, 1000);
     </script>
 </dialog>
-
-=======
-<?- include('./parts/dialog/class-post-edit'); ?>
-<!-- Hapus Postingan -->
-<?- include('./parts/dialog/class-post-delete'); ?>
->>>>>>> Stashed changes
-<!-- Account Handler End -->
-<?- include('./parts/footer'); ?>

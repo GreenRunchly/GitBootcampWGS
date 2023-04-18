@@ -32,12 +32,28 @@ aksiauth.akun = (req, res, next) => {
 
             let {username, password, userid} = decoded.data; // Tarik data coy
 
+            // Init SQL Query Syntax
+            let sqlsyn = ``; let sqlparams = [];
+
             // Cek User Username dan Password dan ID User
-            let sqlsyn = `
+            sqlsyn += `
             SELECT * FROM pengguna 
+<<<<<<< Updated upstream
             WHERE id= ? AND username= ? AND MD5(password)= ?
+=======
+            WHERE id= ? AND username= ? AND password= ? ;
+>>>>>>> Stashed changes
             `;
-            pooldb.query(sqlsyn, [userid, username, password], (err, result) => {
+            sqlparams.push(userid, username, password);
+
+            // Mengambil record evaluasi
+            sqlsyn += `
+            SELECT er.* FROM evaluasi_result er
+            WHERE er.id_owner = ? AND status = 'start';
+            `;
+            sqlparams.push(userid);
+
+            pooldb.query(sqlsyn, sqlparams, (err, result) => {
                 
                 // Cek error atau tidak
                 if (err){
@@ -57,13 +73,19 @@ aksiauth.akun = (req, res, next) => {
                         return;
                     }
 
-                }else if (result[0]){ // Hanya membutuhkan satu hasil
+                }else if (result[0][0]){ // Hanya membutuhkan satu hasil
 
                     // Process Data User
-                    // result[0].created = strtotime(`${result[0].created}`);
-                    // result[0].updated = strtotime(`${result[0].updated}`);
-                    delete (result[0].password); // Hapus password
-                    req.bridge = {akun:result[0]};
+                    // result[0][0].created = strtotime(`${result[0][0].created}`);
+                    // result[0][0].updated = strtotime(`${result[0][0].updated}`);
+                    delete (result[0][0].password); // Hapus password
+                    req.bridge = {akun:result[0][0]};
+
+                    // Jika ada evaluasi yang masih aktif
+                    if (result[1][0]){
+                        req.bridge.evaluation = result[1][0];
+                    }
+
                     // Next Middleware
                     next();
 
