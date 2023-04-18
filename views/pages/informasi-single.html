@@ -52,56 +52,10 @@
                 $(".pageCreated").html(`${waktuFull(DataPage.created)}`); // Tampilkan Tanggal dan waktu
                 $("#editPostForm #input_title").val( ($('<textarea />').html(DataPage.title).text()) ); // Isi Judul
                 $("#editPostForm #input_topic").val( ($('<textarea />').html(DataPage.topic).text()) ); // Isi Topik
-                $("#editPostForm #input_format").val( ($('<textarea />').html(DataPage.format).text()) ); // Isi Format
-                
+              
                 $(".pageContent").html(``); // Kosongkan Main Page
-
-                if (DataPage.format){
-                    switch (DataPage.format) {                    
-                        case 'evaluation':
-                        icon = '<i class="far fa-pencil"></i>'; // Atur Icon sebagai evaluasi
-                        $(".pageContent").addClass(`pageSoal`); // Menambahkan Class evaluasi dan append config soal
-                        $(".pageContent").prepend(`
-                        <div class="banner small">
-                            <div class="blok-list tiles title">
-                                <h3 class="list-item center">
-                                    <i class="fas fa-stopwatch"></i> <span class="evaluationConfigWaktu">...</span> Menit
-                                </h3>                                   
-                            </div>
-                            <div class="blok-list tiles title">
-                                <h3 class="list-item center">
-                                    <i class="fas fa-list"></i> <span class="evaluationConfigDikerjakan">...</span> Soal&nbsp&nbsp
-                                </h3>                                
-                            </div>
-                            <div class="blok-list tiles title">
-                                <h3 class="list-item center">
-                                    <i class="fas fa-bullseye-arrow"></i> <span class="evaluationConfigKKM">...</span> KKM&nbsp&nbsp
-                                </h3>                                   
-                            </div>
-                        </div><br>
-                        `);
-                        
-                        if (DataAkun.id !== DataPage.id_owner){
-                            // Menambahkan tombol mulai ujian
-                            $(".pageContent").append(`
-                            <div class="blok-list">
-                                <a class="button active center" onclick="modalShow('confirmEvaluation');">
-                                    <div class="icon"><i class="fas fa-pencil-alt"></i></div>
-                                    <div class="text"><span>Mulai Evaluasi!</span></div>
-                                </a>
-                            </div>
-                            `);
-                        }
-
-                        loadEvaluation(); // Load Data Evaluasi
-                            break; 
-
-                        default:
-                        icon = '<i class="far fa-bookmark"></i>'; // Atur icon sebagai materi
-                        $(".pageContent").html(`${Base64.decode(DataPage.content)}`); // Tampilkan konten
-                            break;
-                    }
-                }
+                icon = '<i class="far fa-bookmark"></i>'; // Atur icon sebagai materi
+                $(".pageContent").html(`${Base64.decode(DataPage.content)}`); // Tampilkan konten
                 
                 $(".pageIcon").html(icon); // Tampilkan Icon
 
@@ -118,9 +72,6 @@
         };
     };
 </script>
-<!-- Evaluation Handler -->
-<?- include('./parts/module-post-evaluation'); ?>
-<!-- Evaluation Handler -->
 
 <!-- Edit Postingan Kelas -->
 <?- include('./parts/dialog/edit-post-class'); ?>

@@ -137,17 +137,6 @@
                 $(`.postListing .list-item`).not(':last').remove();
                 dataArray.forEach(element => {
                     let icon = '<i class="far fa-bookmark"></i>';
-                    if (element.format){
-                        switch (element.format) {   
-                            case 'evaluation':
-                                icon = '<i class="far fa-pencil"></i>';
-                                break;                 
-                            default:
-                                icon = '<i class="far fa-bookmark"></i>';
-                                break;
-                        }
-                    }
-                    console.log(element.format);
                     let searchAs = (element.title).toUpperCase();
                     // Strukcture
                     let html = `

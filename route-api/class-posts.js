@@ -81,17 +81,7 @@ router.get('/:idkelas/informasi/:idinformasi', [
 
                                 // Encode Konten dan Hapus HTML Entities pada title
                                 result_[0].title = modval.validator.unescape(result_[0].title);
-                                if (akun.id === result_[0].id_owner){
-                                    result_[0].content = tools.base64Encode(result_[0].content);
-                                }else{
-                                    if (result_[0].format == 'evaluation'){
-                                        let konten = JSON.parse(result_[0].content); // Ubah string jadi object
-                                        delete konten.soal; // Hapus konten soal
-                                        result_[0].content = tools.base64Encode(JSON.stringify(konten));
-                                    }else{
-                                        result_[0].content = tools.base64Encode(result_[0].content);
-                                    }                                   
-                                }
+                                result_[0].content = tools.base64Encode(result_[0].content);
                                 
                                 // Menampilkan data postingan
                                 res.status(200).json({
@@ -150,17 +140,7 @@ router.get('/:idkelas/informasi/:idinformasi', [
 
                             // Encode Konten dan Hapus HTML Entities pada title
                             result_[0].title = modval.validator.unescape(result_[0].title);
-                            if (akun.id === result_[0].id_owner){
-                                result_[0].content = tools.base64Encode(result_[0].content);
-                            }else{
-                                if (result_[0].format == 'evaluation'){
-                                    let konten = JSON.parse(result_[0].content); // Ubah string jadi object
-                                    delete konten.soal; // Hapus konten soal
-                                    result_[0].content = tools.base64Encode(JSON.stringify(konten));
-                                }else{
-                                    result_[0].content = tools.base64Encode(result_[0].content);
-                                }                                   
-                            }
+                            result_[0].content = tools.base64Encode(result_[0].content);
 
                             // Menampilkan data postingan
                             res.status(200).json({
