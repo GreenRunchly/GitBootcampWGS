@@ -1,4 +1,4 @@
-<dialog id="editPost" class="wide-med">
+<dialog id="editPost">
     <div class="panel-back aksiModal" value="close"></div>
     <div class="content">
         <div class="main">
@@ -20,8 +20,6 @@
                             <label>File MS Word</label>
                             <input type="file" name="content" id="input_content" >
                         </div>
-                    </div>
-                    <div class="blok-list flex">
                         <div class="item-group">
                             <label>Topic</label>
                             <select name="topic" id="input_topic">
@@ -100,28 +98,7 @@
                     document.body.appendChild(dlFileTag); dlFileTag.click(); document.body.removeChild(dlFileTag);
                     window.location.reload();
                 }
-                // Download Template
-                if (aksi == 'download-template'){
-                    let dlFileTag = document.createElement("a");
-                    dlFileTag.href = '/template/template-evaluasi.docx';
-                    dlFileTag.download = 'Template Evaluasi.docx'
-                    // Buat, Klik, Hapus
-                    document.body.appendChild(dlFileTag); dlFileTag.click(); document.body.removeChild(dlFileTag);
-                    window.location.reload();
-                }
             }; lakukan(); 
         });
-        // Cek format untuk sesuaikan file template
-        setInterval(() => {
-            switch ($('#input_format').val()) {
-                case 'evaluation':
-                    $('.buttonEvaluationTemplate').show();
-                    break;
-            
-                default:
-                    $('.buttonEvaluationTemplate').hide();
-                    break;
-            };
-        }, 1000);
     </script>
 </dialog>

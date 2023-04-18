@@ -1,4 +1,4 @@
-<dialog id="addPost" class="wide-med">
+<dialog id="addPost">
     <div class="panel-back aksiModal" value="close"></div>
     <div class="content">
         <div class="main">
@@ -20,8 +20,6 @@
                             <label>File MS Word</label>
                             <input type="file" name="content" id="input_content" >
                         </div>
-                    </div>
-                    <div class="blok-list flex">
                         <div class="item-group">
                             <label>Topic</label>
                             <select name="topic" id="input_topic">
@@ -33,12 +31,6 @@
             </form>
         </div>
         <div class="options">
-            <div class="blok-list flex">
-                <button class="button center aksiModal buttonEvaluationTemplate" value="download-template">
-                    <div class="icon"><i class="far fa-file-word"></i></div>
-                    <div class="text"><span>Get Template</span></div>
-                </button>
-            </div>
             <div class="blok-list flex">
                 <button class="button aksiModal" value="ok">
                     <div class="icon"><i class="far fa-check"></i></div>
@@ -86,28 +78,8 @@
             });
         }, (modalid, aksi) =>{
             async function lakukan() {
-                // Download Template
-                if (aksi == 'download-template'){
-                    let dlFileTag = document.createElement("a");
-                    dlFileTag.href = '/template/template-evaluasi.docx';
-                    dlFileTag.download = 'Template Evaluasi.docx';
-                    // Buat, Klik, Hapus
-                    document.body.appendChild(dlFileTag); dlFileTag.click(); document.body.removeChild(dlFileTag);
-                    window.location.reload();
-                }
+
             }; lakukan(); 
         });
-        // Cek format untuk sesuaikan file template
-        setInterval(() => {
-            switch ($('#input_format').val()) {
-                case 'evaluation':
-                    $('.buttonEvaluationTemplate').show();
-                    break;
-            
-                default:
-                    $('.buttonEvaluationTemplate').hide();
-                    break;
-            };
-        }, 1000);
     </script>
 </dialog>

@@ -119,6 +119,7 @@
                 if (data.sukses) {
                     DataPageInformasi = data.hasil;
                     loadPageInformasiData();
+                    ajaxParticipant();
                     console.log(data.hasil);
                 }else{
                     if (data.logout){
@@ -152,48 +153,53 @@
             };
         }; 
 
-        // Load Data Informasi
-        $.ajax({
-            type: "GET",
-            url: '/api/kelas/<?= idkelas ?>/all-peserta',
-            cache: false,
-            success: function(data) {
-                if (data.sukses) {
-                    DataPageParticipant = data;
-                    loadPageParticipant();
-                    console.log(data.hasil);
-                }else{
-                    if (data.logout){
-                        window.location.reload(); return;
-                    }
-                    notifAdd('Gagal Mengambil Data (Participant)!', data.pesan, 'error', 0, false, true);
-                };
-            },
-            error: function(xhr, status, error) {
-                notifAdd('Gagal Mengambil Data (Participant)!', `${error} (${status} / ${status})`, 'error', 0, true, true);
-            }
-        });
-        async function loadPageParticipant() {
-            if (DataPageParticipant){
-                $(".pageParticipantCurrent").html(DataPageParticipant.current_user);
-                $(".pageParticipantMax").html(DataPageParticipant.max_user);   
-                
-                
-                let dataArray = DataPageParticipant.hasil;
-                $(`.participantListing .list-item`).not(':last').remove();
-                dataArray.forEach(element => {
-                    let searchAs = (element.name).toUpperCase();
-                    let icon = '<i class="far fa-user"></i>';
-                    // Strukcture
-                    let html = `
-                        <a class="banner color small list-item searchItem" search-as="${searchAs}">
-                            <div class="title">
-                                <h3>${icon}${element.name}</h3>
-                            </div>
-                        </a>
-                    `;
-                    $(`.participantListing`).prepend(html);
-                });
+        function ajaxParticipant() {
+            // Load Data All Peserta
+            $.ajax({
+                type: "GET",
+                url: '/api/kelas/<?= idkelas ?>/all-peserta',
+                cache: false,
+                success: function(data) {
+                    if (data.sukses) {
+                        DataPageParticipant = data;
+                        loadPageParticipant();
+                        console.log(data.hasil);
+                    }else{
+                        if (data.logout){
+                            window.location.reload(); return;
+                        }
+                        notifAdd('Gagal Mengambil Data (Participant)!', data.pesan, 'error', 0, false, true);
+                    };
+                },
+                error: function(xhr, status, error) {
+                    notifAdd('Gagal Mengambil Data (Participant)!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+                }
+            });
+            async function loadPageParticipant() {
+                if (DataPageParticipant){
+                    $(".pageParticipantCurrent").html(DataPageParticipant.current_user);
+                    $(".pageParticipantMax").html(DataPageParticipant.max_user);   
+                    
+                    
+                    let dataArray = DataPageParticipant.hasil;
+                    $(`.participantListing .list-item`).not(':last').remove();
+                    dataArray.forEach(element => {
+                        let searchAs = (element.name).toUpperCase();
+                        let icon = '<i class="far fa-user"></i>';
+                        if (element.id == DataPage.id_owner){
+                            icon = '<i class="far fa-crown"></i>';
+                        }
+                        // Strukcture
+                        let html = `
+                            <a class="banner color small list-item searchItem" search-as="${searchAs}">
+                                <div class="title">
+                                    <h3>${icon}${element.name}</h3>
+                                </div>
+                            </a>
+                        `;
+                        $(`.participantListing`).prepend(html);
+                    });
+                }
             }
         }
 

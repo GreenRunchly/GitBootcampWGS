@@ -79,6 +79,7 @@
             },
             error: function(xhr, status, error) {
                 notifAdd('Gagal Mengambil Data (Kelas)!', `${error} (${status} / ${status})`, 'error', 0, true, true);
+                window.location = '/kelas';
             }
         });
 

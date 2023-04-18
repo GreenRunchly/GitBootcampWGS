@@ -91,7 +91,15 @@ router.get('/:idkelas', [
                 });
                 return;
 
-            }            
+            } else{
+
+                // Menampilkan pesan ditolak
+                res.status(200).json({
+                    pesan : `Kelas tidak ditemukan`, error : 1
+                });
+                return;
+
+            }           
 
         };
     });
