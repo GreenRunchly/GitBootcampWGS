@@ -4,8 +4,8 @@
         <div class="main">
             <header class="banner small">
                 <div class="title">
-                    <h1><i class="fas fa-paper-plane"></i>Edit Post</h1>
-                    <p style="color:red;">Edit konten hanya bisa menimpah, bukan mengubah sebagian, jadi download terlebih dahulu file ini, dan edit, lalu upload kembali!</p>
+                    <h1><i class="fas fa-paper-plane"></i>Ubah Postingan</h1>
+                    <p style="color:red;background-color: white;padding:4px 4px;border-radius: 8px;">Edit konten hanya bisa menimpah, bukan mengubah sebagian, jadi download terlebih dahulu file lama yang ada dibawah, dan edit, lalu upload kembali!</p>
                     <p>Informasi hanya bisa dipublikasikan berbentuk file Microsoft Word saja!</p>
                 </div>
             </header>
@@ -17,14 +17,15 @@
                             <input type="text" name="title" id="input_title" maxlength="60" placeholder="Masukan Judul">
                         </div>
                         <div class="item-group">
-                            <label>File MS Word</label>
-                            <input type="file" name="content" id="input_content" accept= "application/msword" >
+                            <label>File MS Word (.docx)</label>
+                            <input type="file" name="content" id="input_content" accept=".doc,.docx" >
                         </div>
                         <div class="item-group">
-                            <label>Topic</label>
-                            <select name="topic" id="input_topic">
+                            <input name="topic" id="input_topic" type="hidden" value="all">
+                            <!-- <label>Topik</label>
+                            <select name="topic" id="input_topic" type="hidden">
                                 <option value="all">All Topic</option>
-                            </select>
+                            </select> -->
                         </div>
                     </div>
                     <input type="hidden" name="idinformasi" value="<?= idinformasi ?>"/>
@@ -35,7 +36,7 @@
             <div class="blok-list flex">
                 <button class="button center aksiModal" value="download">
                     <div class="icon"><i class="far fa-undo"></i></div>
-                    <div class="text"><span>Get Old File</span></div>
+                    <div class="text"><span>Unduh File Lama</span></div>
                 </button>
             </div>
             <div class="blok-list flex">

@@ -4,27 +4,27 @@
         <div class="main">
             <header class="banner small">
                 <div class="title">
-                    <h1><i class="fas fa-cog"></i>Class Preferences</h1>
-                    <p>Ubah nama atau subject kelas mu disini!</p>
+                    <h1><i class="fas fa-cog"></i>Atur Kelas</h1>
+                    <p>Ubah judul, deskripsi atau jumlah maksimum partisipan!</p>
                 </div>
             </header>
             <form id="editForm" action="/api/kelas/<?= idkelas ?>/edit" method="post">
                 <div class="blok-list">
                     <div class="blok-list">
                         <div class="item-group">
-                            <label>Class Name</label>
+                            <label>Nama Kelas (Label)</label>
                             <input type="text" name="name" id="input_name" maxlength="30" placeholder="Masukan label kelas.. (Kimia Semester 1)">
                         </div>
                         <div class="item-group">
-                            <label>Description</label>
+                            <label>Deskripsi</label>
                             <input type="text" name="desc" id="input_desc" maxlength="100" placeholder="Deskripsikan kelasmu.. (Opsional)">
                         </div>
                         <div class="item-group">
-                            <label>Subject</label>
+                            <label>Subjek/Mata Pelajaran</label>
                             <input type="text" name="subject" id="input_subject" placeholder="Apa yang akan diajari? (Kimia)">
                         </div>
                         <div class="item-group">
-                            <label>Room</label>
+                            <label>Ruang/Kelas</label>
                             <input type="text" name="room" id="input_room" placeholder="Pada ruang berapa? (10 MIPA 1 / 202)">
                         </div> 
                     </div>
@@ -37,7 +37,7 @@
                             </select>
                         </div> -->
                         <div class="item-group">
-                            <label>Max Users</label>
+                            <label>Maksimal Partisipan</label>
                             <input type="number" name="max_user" id="input_max_user" placeholder="1-100" min="1" max="100" value="10">
                         </div>
                     </div>

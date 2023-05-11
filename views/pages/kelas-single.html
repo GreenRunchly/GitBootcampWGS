@@ -7,27 +7,27 @@
         <h2><i class="far fa-chalkboard-teacher"></i><span class="pageClassName"></span></h2>
         <h3><span class="pageClassRoom"></span> - <span class="pageClassSubject"></span></h3>
         <p><span class="pageClassDesc"></span></p>
-        <p>Hosted by <span><b class="pageClassOwnerName">...</b></span></p>
+        <p>Dibuat oleh <span><b class="pageClassOwnerName">...</b></span></p>
     </div>
 </header>
 <div class="blok-list flex tiles tiles-s2">
     <a class="banner hoverable small list-item menuButtonParticipant" onclick="modalShow('classParticipantShow');">
         <div class="title">
-            <h2><i class="fas fa-users"></i>Participants</h2>
-            <p>There's <span class="pageParticipantCurrent">...</span> of <span class="pageParticipantMax">...</span> participants joined.</p>
+            <h2><i class="fas fa-users"></i>Partisipan</h2>
+            <p>Terdapat <span class="pageParticipantCurrent">...</span> per <span class="pageParticipantMax">...</span> partisipan yang bergabung!</p>
         </div>
     </a>
     <a class="banner hoverable small list-item menuButtonPreferences" onclick="modalShow('editKelas');">
         <div class="title">
-            <h2><i class="fas fa-cog"></i>Preferences</h2>
-            <p>Change the way this class flow!</p>
+            <h2><i class="fas fa-cog"></i>Atur Kelas</h2>
+            <p>Ubah judul, deskripsi atau jumlah maksimum partisipan!</p>
         </div>
     </a>
 </div>
 <div class="blok-list flex">
     <div class="item-group">
-        <label><b style="font-size: 1.3rem;">Latest Posts</b></label>
-        <input type="text" class="searchInput" area="postListing" placeholder="Type here to search...">
+        <label><b style="font-size: 1.3rem;">Postingan</b></label>
+        <input type="text" class="searchInput" area="postListing" placeholder="Cari postingan berdasarkan judul..">
     </div>
 </div>
 <div class="blok-list postListing">
@@ -89,7 +89,7 @@
                 }else{
                     $("#konfirmasiQuit .main .title h1").html('Menghapus kelas?');
                     $("#konfirmasiQuit .main .title p").html('Seluruh participant dan anda akan dikeluarkan secara permanen, yakin?');
-                    $(".menuButtonQuitClass .text span").html('Terminate Class');
+                    $(".menuButtonQuitClass .text span").html('Hapus Kelas');
                     $(".menuButtonQuitClass .icon").html('<i class="fas fa-bomb"></i>');
 
                     // Menampilkan kode invite

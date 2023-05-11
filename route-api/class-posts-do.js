@@ -154,7 +154,7 @@ router.post('/:idkelas/informasi/do', [
                                 })
                             } else { // File tidak didukung karena hanya bisa menggunakan MS Word
                                 res.status(200).json({
-                                    pesan : `File tidak didukung, harus MS Word!`, error : 1
+                                    pesan : `File tidak didukung, harus MS Word! (.docx)`, error : 1
                                 });
                                 return;
                             }
@@ -198,7 +198,7 @@ router.post('/:idkelas/informasi/do', [
                     
                 });
 
-            } else { // Jika idinformasi tidak ada INSERT
+            } else { // Jika idinformasi tidak ada lakukan INSERT
 
                 if (req.files){
 
@@ -213,17 +213,17 @@ router.post('/:idkelas/informasi/do', [
                             let input_content = result_.value; // HTML Output
                             
                             wordProcessor(res, req, input_content).then((resulthtml) => {
-                                input_content = resulthtml.maincontent;
+                                input_content = resulthtml;
                                 nextProcedure();
                             });
                            
                             function nextProcedure() {
                                 // Menambahkan Postingan 
                                 let sqlsyn = `
-                                INSERT INTO informasi (id_owner, id_class, title, topic, content) 
-                                VALUES ( ?, ?, ?, ?, ? )
+                                INSERT INTO informasi (id_owner, id_class, title, topic, thumbnail, content) 
+                                VALUES ( ?, ?, ?, ?, ?, ? )
                                 `;
-                                pooldb.query( sqlsyn, [akun.id, idkelas, modval.validator.escape(title), modval.validator.escape(topic), input_content], (err, result) => { 
+                                pooldb.query( sqlsyn, [akun.id, idkelas, modval.validator.escape(title), modval.validator.escape(topic), input_content.thumbnail, input_content.maincontent], (err, result) => { 
                                 
                                     if (err){ // Cek ada error atau tidak
                                         res.status(200).json({
@@ -252,7 +252,7 @@ router.post('/:idkelas/informasi/do', [
                         })
                     } else { // File tidak didukung karena hanya bisa menggunakan MS Word
                         res.status(200).json({
-                            pesan : `File tidak didukung, harus MS Word!`, error : 1
+                            pesan : `File tidak didukung, harus MS Word! (.docx)`, error : 1
                         });
                         return;
                     }

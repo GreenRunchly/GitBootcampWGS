@@ -4,7 +4,7 @@
         <div class="main">
             <header class="banner small">
                 <div class="title">
-                    <h1><i class="fas fa-paper-plane"></i>Make a Post</h1>
+                    <h1><i class="fas fa-paper-plane"></i>Buat Postingan</h1>
                     <p>Beritahu informasi kepada peserta!</p>
                     <p>Informasi hanya bisa dipublikasikan berbentuk file Microsoft Word saja!</p>
                 </div>
@@ -17,14 +17,15 @@
                             <input type="text" name="title" id="input_title" maxlength="60" placeholder="Masukan Judul">
                         </div>
                         <div class="item-group">
-                            <label>File MS Word</label>
-                            <input type="file" name="content" id="input_content" accept= "application/msword" >
+                            <label>File MS Word (.docx)</label>
+                            <input type="file" name="content" id="input_content" accept=".doc,.docx" >
                         </div>
                         <div class="item-group">
-                            <label>Topic</label>
-                            <select name="topic" id="input_topic">
+                            <input name="topic" id="input_topic" type="hidden" value="all">
+                            <!-- <label>Topik</label>
+                            <select name="topic" id="input_topic" type="hidden">
                                 <option value="all">All Topic</option>
-                            </select>
+                            </select> -->
                         </div>
                     </div>
                 </div>
